@@ -11,13 +11,13 @@ module.exports = React.createClass({ displayName: 'Proxies',
 	},
 	render: function() {
 		var proxy = this.props.proxy || {}
-		return <form>
+		return <form onSubmit={this.onSubmit}>
 			<label>
-				Local port: <input value={proxy.port}/>
+				Local port: <input value={proxy.port} ref="port"/>
 			</label>
 			<label>
 				Remote url:
-				<input value={proxy.url}/>
+				<input value={proxy.url} ref="url"/>
 			</label>
 			{this.props.onDelete &&
 				<button type="button" onClick={this.props.onDelete}>Delete</button>
@@ -25,5 +25,13 @@ module.exports = React.createClass({ displayName: 'Proxies',
 			<button type="reset">Revert</button>
 			<button type="submit">Save</button>
 		</form>
+	},
+
+	onSubmit: function(e) {
+		e.preventDefault()
+		this.props.onChangeProxy && this.props.onChangeProxy({
+			url: this.refs.url.getDOMNode().value,
+			port: this.refs.port.getDOMNode().value,
+		})
 	},
 })
