@@ -1,3 +1,27 @@
+require('es6-shim')
+require('promise-helpers')
+
+var server = require('./src/server')
+
+if(require.main != module) {
+	// Included from tests or other node.js modules
+	module.exports = {
+		open: server,
+	}
+	return
+}
+
+var PORT = process.env.PORT || 8088
+
+server({
+	port: PORT
+})
+	.then(function() {
+		console.log('Server running at ' + PORT)
+	})
+	.done()
+return
+
 var httpProxy = require('http-proxy')
 var http = require('http')
 var yargs = require('yargs')
