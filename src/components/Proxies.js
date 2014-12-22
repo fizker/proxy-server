@@ -3,11 +3,12 @@ var React = require('react')
 var ProxyProp = require('../props/Proxy')
 var Proxy = require('./Proxy')
 
-var fajax = require('fajax')
+var storage = require('../storage/client')
 
 module.exports = React.createClass({ displayName: 'Proxies',
 	propTypes: {
 		proxies: React.PropTypes.arrayOf(ProxyProp).isRequired,
+		performAction: React.PropTypes.func.isRequired,
 	},
 	render: function() {
 		return <div>
@@ -22,23 +23,12 @@ module.exports = React.createClass({ displayName: 'Proxies',
 	},
 
 	onDeleteProxy: function(port) {
-		fajax.delete('/proxies/' + port)
-			.then(()=>location.reload())
-			.done()
+		this.props.performAction(()=>fajax.delete('/proxies/' + port))
 	},
 	onChangeProxy: function(port, proxy) {
-		var promies = [fajax.put('/proxies/' + proxy.port, { json: proxy })]
-		if(port != proxy.port) {
-			promises.push(fajax.delete('/proxies/' + port))
-		}
-
-		Promise.all(promises)
-			.then(()=>location.reload())
-			.done()
+		this.props.performAction(()=>storage.proxy.update(port, proxy))
 	},
 	onCreateProxy: function(proxy) {
-		fajax.put('/proxies/' + proxy.port, { json: proxy })
-			.then(()=>location.reload())
-			.done()
+		this.props.performAction(()=>storage.proxies.set(proxy))
 	},
 })

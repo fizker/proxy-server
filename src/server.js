@@ -6,6 +6,7 @@ var bodyParser = require('body-parser')
 module.exports = function(options) {
 	var app = express()
 
+	var url = null
 	var proxies = {}
 
 	app.use(express.static(path.join(__dirname, '../static')))
@@ -17,11 +18,17 @@ module.exports = function(options) {
 			<script type="application/json" id="data">
 				${JSON.stringify({
 					proxies: allProxies,
+					url: url,
 				})}
 			</script>
 			Loading…
 			<script src="app.js"></script>
 		`)
+	})
+
+	app.put('/url', bodyParser.json({ strict: false }), function(req, res) {
+		url = req.body
+		res.sendStatus(204)
 	})
 
 	app.put('/proxies/:port', bodyParser.json(), function(req, res) {

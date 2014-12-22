@@ -4,6 +4,6 @@ require('promise-helpers')
 var React = require('react')
 
 var data = JSON.parse(document.querySelector('#data').innerHTML)
-var Proxies = require('./src/components/Proxies')
+var App = require('./src/components/App')
 
-React.render(<Proxies proxies={data.proxies}/>, document.body)
+React.render(<App data={data}/>, document.body)
