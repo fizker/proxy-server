@@ -15,18 +15,18 @@ module.exports = React.createClass({ displayName: 'Proxies',
 			<h1>Proxies</h1>
 			{this.props.proxies.map(proxy => <Proxy
 				proxy={proxy}
-				onChangeProxy={p=>this.onChangeProxy(proxy.port, p)}
-				onDelete={()=>this.onDeleteProxy(proxy.port)}
+				onChangeProxy={p=>this.onChangeProxy(proxy, p)}
+				onDelete={()=>this.onDeleteProxy(proxy)}
 			/>)}
 			<Proxy onChangeProxy={this.onCreateProxy} />
 		</div>
 	},
 
-	onDeleteProxy: function(port) {
-		this.props.performAction(()=>fajax.delete('/proxies/' + port))
+	onDeleteProxy: function(proxy) {
+		this.props.performAction(()=>storage.proxies.delete(proxy))
 	},
-	onChangeProxy: function(port, proxy) {
-		this.props.performAction(()=>storage.proxy.update(port, proxy))
+	onChangeProxy: function(old, proxy) {
+		this.props.performAction(()=>storage.proxies.update(old, proxy))
 	},
 	onCreateProxy: function(proxy) {
 		this.props.performAction(()=>storage.proxies.set(proxy))

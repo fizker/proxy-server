@@ -16,11 +16,11 @@ function setUrl(url) {
 }
 
 function setProxy(proxy) {
-	return fajax.put('/proxies/' + proxy.port, { json: proxy })
+	return fajax.put('/proxies/' + proxy.localPort, { json: proxy })
 }
 
 function deleteProxy(portOrProxy) {
-	return fajax.delete('/proxies/' + portOrProxy.port || portOrProxy)
+	return fajax.delete('/proxies/' + portOrProxy.localPort || portOrProxy)
 }
 
 function updateProxy(port, proxy) {

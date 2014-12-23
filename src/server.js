@@ -33,8 +33,8 @@ module.exports = function(options) {
 
 	app.put('/proxies/:port', bodyParser.json(), function(req, res) {
 		var proxy = req.body
-		proxy.port = req.params.port
-		proxies[proxy.port] = proxy
+		proxy.localPort = req.params.port
+		proxies[proxy.localPort] = proxy
 
 		res.sendStatus(204)
 	})
