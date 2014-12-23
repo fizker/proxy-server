@@ -1,6 +1,6 @@
 require('es6-shim')
 require('promise-helpers')
-require('node-jsx').install({ harmony: true, stripTypes: true })
+require('6to5/register')
 
 var server = require('./src/server')
 

@@ -13,7 +13,7 @@ module.exports = {
 	},
 	module: {
 		loaders: [
-			{ test: /\.jsx?$/, loader: 'jsx-loader?harmony&stripTypes' },
+			{ test: /\.jsx?$/, loader: '6to5-loader' },
 			{ test: /\.json$/, loader: 'json' },
 		],
 	},
