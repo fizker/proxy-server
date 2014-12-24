@@ -16,7 +16,14 @@ module.exports = function(options) {
 	app.use(express.static(path.join(__dirname, '../static')))
 
 	app.get('/', function(req, res) {
-		storage.getAll()
+		Promise.resolve()
+			.then(() => {
+				if(proxies && !proxies.every(p => p.isOpen())) {
+					var p = Promise.all(proxies.map(p => p.stop()))
+					proxies = null
+				}
+			})
+			.then(()=>storage.getAll())
 			.then(data =>{
 				data.proxyRunning = proxies != null
 				res.send(`<!doctype html>

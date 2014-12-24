@@ -6,9 +6,12 @@ class ProxyServer {
 		this.port = port
 		this.url = url
 		this.proxy = httpProxy.createProxyServer({ secure: false })
+			.on('error', e=>this.stop())
 	}
 
 	start() {
+		if(this.isOpen()) return Promise.resolve()
+
 		this.server = http.createServer((req, res) => {
 			res.setHeader('access-control-allow-origin', '*')
 			res.setHeader('access-control-allow-headers', 'accessid,appid,econ-token')
@@ -20,10 +23,17 @@ class ProxyServer {
 		})
 
 		return Promise.nfcall(this.server.listen.bind(this.server), this.port)
+			.then(()=>{this._isOpen = true})
 	}
 
 	stop() {
+		if(!this.isOpen()) return Promise.resolve()
 		return Promise.nfcall(this.server.close.bind(this.server))
+			.then(()=>{this._isOpen = false})
+	}
+
+	isOpen() {
+		return !!this._isOpen
 	}
 }
 
