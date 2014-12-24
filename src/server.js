@@ -1,21 +1,24 @@
 var express = require('express')
 var path = require('path')
+var urlModule = require('url')
 
 var bodyParser = require('body-parser')
 
+var ProxyServer = require('./ProxyServer')
 var storage = require('./storage/server')
 
 module.exports = function(options) {
 	var app = express()
 
-	var url = null
-	var proxies = {}
+	var status = false
+	var proxies = null
 
 	app.use(express.static(path.join(__dirname, '../static')))
 
 	app.get('/', function(req, res) {
 		storage.getAll()
 			.then(data =>{
+				data.proxyRunning = proxies != null
 				res.send(`<!doctype html>
 					<title>Proxy server</title>
 					<script type="application/json" id="data">
@@ -25,6 +28,29 @@ module.exports = function(options) {
 					<script src="app.js"></script>
 				`)
 			})
+			.catch(handleError(res))
+	})
+
+	app.post('/toggle-server', function(req, res) {
+		var p
+		if(proxies) {
+			p = Promise.all(proxies.map(p => p.stop()))
+			proxies = null
+		} else {
+			p = storage.getAll()
+				.then(data => {
+					var url = urlModule.parse(data.url)
+					delete url.host
+					proxies = data.proxies.map(p => {
+						url.port = p.remotePort
+						return new ProxyServer(urlModule.format(url), p.localPort)
+					})
+					return Promise.all(proxies.map(p => p.start()))
+				})
+		}
+
+		p
+			.then(()=>res.sendStatus(204))
 			.catch(handleError(res))
 	})
 

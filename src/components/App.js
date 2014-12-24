@@ -12,14 +12,20 @@ module.exports = React.createClass({ displayName: 'App',
 		data: React.PropTypes.shape({
 			url: React.PropTypes.string,
 			proxies: React.PropTypes.arrayOf(ProxyProp).isRequired,
+			proxyRunning: React.PropTypes.bool,
 		})
 	},
 	render: function() {
 		var data = this.props.data
 		return <div>
+			<button onClick={this.toggleServer}>{data.proxyRunning ? 'Off' : 'On'}</button>
 			<Url url={data.url} onChangeUrl={persistUrl}/>
 			<Proxies proxies={data.proxies} performAction={performAction}/>
 		</div>
+	},
+
+	toggleServer: function() {
+		performAction(()=>storage.status.toggle())
 	},
 })
 

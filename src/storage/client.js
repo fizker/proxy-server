@@ -8,7 +8,10 @@ module.exports = {
 	},
 	url: {
 		set: setUrl,
-	}
+	},
+	status: {
+		toggle,
+	},
 }
 
 function setUrl(url) {
@@ -28,4 +31,8 @@ function updateProxy(port, proxy) {
 		setProxy(proxy),
 		port != proxy.port && deleteProxy(port),
 	])
+}
+
+function toggle() {
+	return fajax.post('/toggle-server')
 }
