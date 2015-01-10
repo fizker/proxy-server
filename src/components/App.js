@@ -13,13 +13,14 @@ module.exports = React.createClass({ displayName: 'App',
 			url: React.PropTypes.string,
 			proxies: React.PropTypes.arrayOf(ProxyProp).isRequired,
 			proxyRunning: React.PropTypes.bool,
+			ip: React.PropTypes.string,
 		})
 	},
 	render: function() {
 		var data = this.props.data
 		return <div>
 			<button onClick={this.toggleServer}>{data.proxyRunning ? 'Off' : 'On'}</button>
-			<Url url={data.url} onChangeUrl={persistUrl}/>
+			<Url url={data.url} onChangeUrl={persistUrl} ip={data.ip}/>
 			<Proxies proxies={data.proxies} performAction={performAction}/>
 		</div>
 	},

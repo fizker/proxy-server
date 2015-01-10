@@ -12,6 +12,9 @@ module.exports = {
 	status: {
 		toggle,
 	},
+	ip: {
+		get: getIP,
+	},
 }
 
 function setUrl(url) {
@@ -35,4 +38,8 @@ function updateProxy(port, proxy) {
 
 function toggle() {
 	return fajax.post('/toggle-server')
+}
+
+function getIP() {
+	return fajax.get('/ip').then(xhr => xhr.body)
 }

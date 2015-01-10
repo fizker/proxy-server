@@ -25,6 +25,7 @@ module.exports = function(options) {
 			})
 			.then(()=>storage.getAll())
 			.then(data =>{
+				data.ip = req.ip
 				data.proxyRunning = proxies != null
 				res.send(`<!doctype html>
 					<title>Proxy server</title>
@@ -36,6 +37,11 @@ module.exports = function(options) {
 				`)
 			})
 			.catch(handleError(res))
+	})
+
+	app.get('/ip', function(req, res) {
+		res.set('content-type', 'text/plain')
+		res.send(req.ip)
 	})
 
 	app.post('/toggle-server', function(req, res) {
