@@ -29,11 +29,12 @@ module.exports = function(options) {
 				data.proxyRunning = proxies != null
 				res.send(`<!doctype html>
 					<title>Proxy server</title>
+					<link href="/style.css" rel="stylesheet"/>
 					<script type="application/json" id="data">
 						${JSON.stringify(data)}
 					</script>
 					Loading…
-					<script src="app.js"></script>
+					<script src="/app.js"></script>
 				`)
 			})
 			.catch(handleError(res))

@@ -1,0 +1,12 @@
+.running-indicator {
+	display: inline-block;
+	border-radius: 10px;
+	width: 10px;
+	height: 10px;
+	margin: 0 10px;
+	background: red;
+}
+
+.running-indicator--on {
+	background: green;
+}
