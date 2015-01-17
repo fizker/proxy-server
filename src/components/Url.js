@@ -41,7 +41,8 @@ module.exports = React.createClass({ displayName: 'Url',
 	},
 
 	getURL: function() {
-		return urlModule.parse(this.state.url || this.props.url)
+		var url = this.state.url || this.props.url
+		return url && urlModule.parse(url)
 	},
 	useIP: function() {
 		var url = this.getURL()
@@ -53,7 +54,7 @@ module.exports = React.createClass({ displayName: 'Url',
 			newState = 'http://' + this.props.ip
 		}
 
-		this.setState({ url: newState })
+		this.setState({ url: newState }, ()=>this.onSubmit())
 	},
 	onUseIPClicked: function(e) {
 		e.preventDefault()
@@ -67,7 +68,7 @@ module.exports = React.createClass({ displayName: 'Url',
 		this.setState({ url: newUrl })
 	},
 	onSubmit: function(e) {
-		e.preventDefault()
+		e && e.preventDefault()
 
 		var newUrl = this.state.url
 
