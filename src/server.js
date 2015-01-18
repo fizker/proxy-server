@@ -51,16 +51,7 @@ module.exports = function(options) {
 			p = Promise.all(proxies.map(p => p.stop()))
 			proxies = null
 		} else {
-			p = storage.getAll()
-				.then(data => {
-					var url = urlModule.parse(data.url)
-					delete url.host
-					proxies = data.proxies.map(p => {
-						url.port = p.remotePort
-						return new ProxyServer(urlModule.format(url), p.localPort)
-					})
-					return Promise.all(proxies.map(p => p.start()))
-				})
+			p = startProxies()
 		}
 
 		p
@@ -68,9 +59,29 @@ module.exports = function(options) {
 			.catch(handleError(res))
 	})
 
+	function startProxies() {
+		return storage.getAll()
+			.then(data => {
+				var url = urlModule.parse(data.url)
+				delete url.host
+				proxies = data.proxies.map(p => {
+					url.port = p.remotePort
+					return new ProxyServer(urlModule.format(url), p.localPort)
+				})
+				return Promise.all(proxies.map(p => p.start()))
+			})
+	}
+
 	app.put('/url', bodyParser.json({ strict: false }), function(req, res) {
 		var url = req.body
+
 		storage.url.set(url)
+			.then(()=>{
+				if(proxies) {
+					return Promise.all(proxies.map(proxy => proxy.stop()))
+						.then(startProxies)
+				}
+			})
 			.then(()=>res.sendStatus(204))
 			.catch(handleError(res))
 	})
