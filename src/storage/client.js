@@ -29,7 +29,8 @@ function deleteProxy(portOrProxy) {
 	return fajax.delete('/proxies/' + portOrProxy.localPort || portOrProxy)
 }
 
-function updateProxy(port, proxy) {
+function updateProxy(old, proxy) {
+	var port = old.port
 	return Promise.all([
 		setProxy(proxy),
 		port != proxy.port && deleteProxy(port),
