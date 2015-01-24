@@ -10,7 +10,6 @@ module.exports = React.createClass({ displayName: 'Proxies',
 		onDelete: React.PropTypes.func,
 	},
 	getInitialState: function() {
-		var proxy = this.props.proxy || {}
 		return {
 			localPort: null,
 			remotePort: null,
@@ -23,6 +22,7 @@ module.exports = React.createClass({ displayName: 'Proxies',
 		if(this.state.remotePort != null) {
 			remotePort = this.state.remotePort
 		}
+		let hasChanges = this.state.localPort != null || this.state.remotePort != null
 		return <form onSubmit={this.onSubmit}>
 			<label>
 				Local port:
@@ -40,22 +40,39 @@ module.exports = React.createClass({ displayName: 'Proxies',
 				/>
 			</label>
 			{this.props.onDelete &&
-				<button type="button" onClick={this.props.onDelete}>Delete</button>
+				<button
+					type="button"
+					onClick={this.props.onDelete}
+					disabled={!hasChanges}
+				>
+					Delete
+				</button>
 			}
 			<button
 				type="button"
 				onClick={(e)=>{e.preventDefault();this.setState(this.getInitialState())}}
+				disabled={!hasChanges}
 			>
 				Revert
 			</button>
-			<button type="submit">Save</button>
+			<button
+				type="submit"
+				disabled={!hasChanges}
+			>
+				Save
+			</button>
 		</form>
 	},
 
 	onChange: function(prop, e) {
 		if(!this.props.onChangeProxy) return
 
-		var val = e.target.value
+		var val = +e.target.value || null
+
+		let proxy = this.props.proxy || {}
+		if(proxy[prop] == val) {
+			val = null
+		}
 
 		this.setState({
 			[prop]: val
