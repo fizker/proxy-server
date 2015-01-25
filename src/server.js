@@ -88,14 +88,14 @@ module.exports = function(options) {
 
 	app.put('/proxies/:port', bodyParser.json(), function(req, res) {
 		var proxy = req.body
-		proxy.localPort = req.params.port
+		proxy.localPort = +req.params.port
 		storage.proxies.set(proxy)
 			.then(()=>res.sendStatus(204))
 			.catch(handleError(res))
 	})
 
 	app.delete('/proxies/:port', function(req, res) {
-		storage.proxies.delete(req.params.port)
+		storage.proxies.delete(+req.params.port)
 			.then(()=>res.sendStatus(204))
 			.catch(handleError(res))
 	})
