@@ -17,9 +17,22 @@ module.exports = React.createClass({ displayName: 'Proxies',
 				proxy={proxy}
 				onChangeProxy={p=>this.onChangeProxy(proxy, p)}
 				onDelete={()=>this.onDeleteProxy(proxy)}
+				validateProxy={this.validateProxy}
 			/>)}
 			<Proxy onChangeProxy={this.onCreateProxy} />
 		</div>
+	},
+
+	validateProxy: function(old, proxy) {
+		if(old && old.localPort == proxy.localPort) {
+			return null
+		}
+
+		if(this.props.proxies.find(p => p.localPort == proxy.localPort)) {
+			return 'Port-number is taken'
+		}
+
+		return null
 	},
 
 	onDeleteProxy: function(proxy) {

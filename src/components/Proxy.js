@@ -6,6 +6,7 @@ module.exports = React.createClass({ displayName: 'Proxies',
 	propTypes: {
 		proxy: ProxyProp,
 
+		validateProxy: React.PropTypes.func,
 		onChangeProxy: React.PropTypes.func,
 		onDelete: React.PropTypes.func,
 	},
@@ -23,6 +24,11 @@ module.exports = React.createClass({ displayName: 'Proxies',
 			remotePort = this.state.remotePort
 		}
 		let hasChanges = this.state.localPort != null || this.state.remotePort != null
+
+		let validation = this.props.validateProxy && this.props.validateProxy(this.props.proxy, {
+			localPort, remotePort
+		})
+
 		return <form onSubmit={this.onSubmit}>
 			<label>
 				Local port:
@@ -43,7 +49,6 @@ module.exports = React.createClass({ displayName: 'Proxies',
 				<button
 					type="button"
 					onClick={this.props.onDelete}
-					disabled={!hasChanges}
 				>
 					Delete
 				</button>
@@ -57,10 +62,11 @@ module.exports = React.createClass({ displayName: 'Proxies',
 			</button>
 			<button
 				type="submit"
-				disabled={!hasChanges}
+				disabled={!hasChanges || !!validation}
 			>
 				Save
 			</button>
+			<div>{validation}</div>
 		</form>
 	},
 
@@ -93,9 +99,15 @@ module.exports = React.createClass({ displayName: 'Proxies',
 			}
 		}
 
-		this.props.onChangeProxy && this.props.onChangeProxy({
+		if(this.props.validateProxy && this.props.validateProxy(this.props.proxy, result)) {
+			return
+		}
+
+		var result = {
 			localPort,
 			remotePort,
-		})
+		}
+
+		this.props.onChangeProxy && this.props.onChangeProxy(result)
 	},
 })
