@@ -1,0 +1,3 @@
+afterEach(function() {
+	fzkes.restore()
+})
