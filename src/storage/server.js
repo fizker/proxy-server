@@ -6,6 +6,8 @@ var data = null
 
 module.exports = {
 	getAll: ()=>ensureData().then(()=>data),
+	clearData: () => data = null,
+
 	proxies: {
 		delete: deleteProxy,
 		set: setProxy,
@@ -15,7 +17,7 @@ module.exports = {
 	url: {
 		set: setUrl,
 		get: getUrl,
-	}
+	},
 }
 
 function ensureData() {
@@ -45,7 +47,9 @@ function getAllProxies() {
 	return ensureData()
 		.then(()=>data.proxies)
 }
-function deleteProxy(port) {
+function deleteProxy(portOrProxy) {
+	var port = typeof(portOrProxy) == 'object' ? portOrProxy.localPort : portOrProxy
+
 	return ensureData()
 		.then(()=>{
 			var p = data.proxies.find(p => p.localPort == port)
