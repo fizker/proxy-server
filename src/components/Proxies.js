@@ -19,7 +19,10 @@ module.exports = React.createClass({ displayName: 'Proxies',
 				onDelete={()=>this.onDeleteProxy(proxy)}
 				validateProxy={this.validateProxy}
 			/>)}
-			<Proxy onChangeProxy={this.onCreateProxy} />
+			<Proxy
+				onChangeProxy={this.onCreateProxy}
+				validateProxy={this.validateProxy}
+			/>
 		</div>
 	},
 
