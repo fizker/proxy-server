@@ -66,7 +66,7 @@ module.exports = React.createClass({ displayName: 'Proxies',
 			>
 				Save
 			</button>
-			<div>{validation}</div>
+			<div className="validation">{validation}</div>
 		</form>
 	},
 

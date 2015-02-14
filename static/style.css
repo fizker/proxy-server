@@ -10,3 +10,7 @@
 .running-indicator--on {
 	background: green;
 }
+
+.validation {
+	color: red;
+}
