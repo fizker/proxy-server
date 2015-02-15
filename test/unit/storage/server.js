@@ -53,4 +53,23 @@ describe('unit/storage/server.js', function() {
 			})
 		})
 	})
+
+	describe('Calling `proxies.set()` with a new proxy', function() {
+		beforeEach(function() {
+			return storage.proxies.set({
+				localPort: 3,
+				remotePort: 33,
+			})
+		})
+		it('should save with the new proxy', function() {
+			expect(this.lastWrittenData).to.deep.equal({
+				url: 'abc',
+				proxies: [
+					{ localPort: 1, remotePort: 11 },
+					{ localPort: 2, remotePort: 22 },
+					{ localPort: 3, remotePort: 33 },
+				],
+			})
+		})
+	})
 })
