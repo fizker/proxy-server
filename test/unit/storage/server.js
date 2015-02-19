@@ -6,8 +6,8 @@ var deepCopy = require('fmerge')
 describe('unit/storage/server.js', function() {
 	beforeEach(function() {
 		this.proxies = [
-			{ localPort: 1, remotePort: 11 },
-			{ localPort: 2, remotePort: 22 },
+			{ url: 'abc', localPort: 1, remotePort: 11 },
+			{ url: 'abc', localPort: 2, remotePort: 22 },
 		]
 		storage.clearData()
 
@@ -32,7 +32,7 @@ describe('unit/storage/server.js', function() {
 			expect(this.lastWrittenData).to.deep.equal({
 				url: 'abc',
 				proxies: [
-					{ localPort: 2, remotePort: 22 },
+					{ url: 'abc', localPort: 2, remotePort: 22 },
 				],
 			})
 		})
@@ -48,7 +48,7 @@ describe('unit/storage/server.js', function() {
 			expect(this.lastWrittenData).to.deep.equal({
 				url: 'abc',
 				proxies: [
-					{ localPort: 2, remotePort: 22 },
+					{ url: 'abc', localPort: 2, remotePort: 22 },
 				],
 			})
 		})
@@ -57,6 +57,7 @@ describe('unit/storage/server.js', function() {
 	describe('Calling `proxies.set()` with a new proxy', function() {
 		beforeEach(function() {
 			return storage.proxies.set({
+				url: 'def',
 				localPort: 3,
 				remotePort: 33,
 			})
@@ -65,10 +66,30 @@ describe('unit/storage/server.js', function() {
 			expect(this.lastWrittenData).to.deep.equal({
 				url: 'abc',
 				proxies: [
-					{ localPort: 1, remotePort: 11 },
-					{ localPort: 2, remotePort: 22 },
-					{ localPort: 3, remotePort: 33 },
+					{ url: 'abc', localPort: 1, remotePort: 11 },
+					{ url: 'abc', localPort: 2, remotePort: 22 },
+					{ url: 'def', localPort: 3, remotePort: 33 },
 				],
+			})
+		})
+
+		describe('without a url', function() {
+			beforeEach(function() {
+				return storage.proxies.set({
+					localPort: 4,
+					remotePort: 44,
+				})
+			})
+			it('should auto-add default url', function() {
+				expect(this.lastWrittenData).to.deep.equal({
+					url: 'abc',
+					proxies: [
+						{ url: 'abc', localPort: 1, remotePort: 11 },
+						{ url: 'abc', localPort: 2, remotePort: 22 },
+						{ url: 'def', localPort: 3, remotePort: 33 },
+						{ url: 'abc', localPort: 4, remotePort: 44 },
+					],
+				})
 			})
 		})
 	})

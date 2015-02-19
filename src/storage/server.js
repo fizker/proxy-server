@@ -59,7 +59,11 @@ function deleteProxy(portOrProxy) {
 		.then(saveData)
 }
 function setProxy(proxy) {
-	return deleteProxy(proxy.localPort)
+	return ensureData()
+		.then(()=>{
+			if(!proxy.url) proxy.url = data.url
+		})
+		.then(()=>deleteProxy(proxy))
 		.then(()=>data.proxies=data.proxies.concat(proxy).sort((p1, p2)=>p1.localPort-p2.localPort))
 		// start up new proxy
 		.then(saveData)
