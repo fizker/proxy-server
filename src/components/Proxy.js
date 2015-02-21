@@ -99,13 +99,13 @@ module.exports = React.createClass({ displayName: 'Proxies',
 			}
 		}
 
-		if(this.props.validateProxy && this.props.validateProxy(this.props.proxy, result)) {
-			return
-		}
-
 		var result = {
 			localPort,
 			remotePort,
+		}
+
+		if(this.props.validateProxy && this.props.validateProxy(this.props.proxy, result)) {
+			return
 		}
 
 		this.props.onChangeProxy && this.props.onChangeProxy(result)
