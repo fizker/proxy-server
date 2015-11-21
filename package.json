@@ -9,16 +9,15 @@
     "body-parser": "^1.10.0",
     "es6-shim": "^0.20.4",
     "express": "^4.10.6",
-    "fmerge": "^1.2.0",
     "http-proxy": "^1.12.0",
     "promise-helpers": "^0.2.0",
     "react": "^0.12.2",
     "webpack": "^1.4.14",
-    "whatwg-fetch": "^0.10.1",
-    "yargs": "~1.3.3"
+    "whatwg-fetch": "^0.10.1"
   },
   "devDependencies": {
     "chai": "^3.4.1",
+    "fmerge": "^1.2.0",
     "fzkes": "^0.14.1",
     "mocha": "^2.3.4"
   },
