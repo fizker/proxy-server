@@ -1,6 +1,4 @@
-require('es6-shim')
 require('promise-helpers')
-require('6to5/register')
 
 var settings = require('./src/settings')
 var server = require('./src/server')
