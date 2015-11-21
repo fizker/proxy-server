@@ -1,5 +1,4 @@
 require('whatwg-fetch')
-require('es6-shim')
 require('promise-helpers')
 
 var React = require('react')
