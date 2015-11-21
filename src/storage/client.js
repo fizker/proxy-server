@@ -1,4 +1,5 @@
-var fajax = require('fajax')
+const sendJSONHeaders = { 'content-type': 'application/json' }
+const fetchJSONHeaders = { 'accept': 'application/json' }
 
 module.exports = {
 	proxies: {
@@ -18,15 +19,23 @@ module.exports = {
 }
 
 function setUrl(url) {
-	return fajax.put('/url',{ json: url })
+	return fetch('/url', {
+		method: 'put',
+		body: JSON.stringify(url),
+		headers: sendJSONHeaders,
+	})
 }
 
 function setProxy(proxy) {
-	return fajax.put('/proxies/' + proxy.localPort, { json: proxy })
+	return fetch('/proxies/' + proxy.localPort, {
+		method: 'put',
+		body: JSON.stringify(proxy),
+		headers: sendJSONHeaders,
+	})
 }
 
 function deleteProxy(portOrProxy) {
-	return fajax.delete('/proxies/' + portOrProxy.localPort || portOrProxy)
+	return fetch('/proxies/' + portOrProxy.localPort || portOrProxy, { method: 'delete' })
 }
 
 function updateProxy(old, proxy) {
@@ -38,9 +47,10 @@ function updateProxy(old, proxy) {
 }
 
 function toggle() {
-	return fajax.post('/toggle-server')
+	return fetch('/toggle-server', { method: 'post' })
 }
 
 function getIP() {
-	return fajax.get('/ip').then(xhr => xhr.body)
+	return fetch('/ip', { headers: fetchJSONHeaders })
+	.then(xhr => xhr.json())
 }

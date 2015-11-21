@@ -43,5 +43,5 @@ function persistUrl(url) {
 function performAction(fn) {
 	fn()
 		.then(()=>location.reload())
-		.done()
+		.catch(err => console.error(err.stack))
 }
