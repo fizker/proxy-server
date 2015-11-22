@@ -13,8 +13,7 @@ module.exports = {
 	},
 	module: {
 		loaders: [
-			{ test: /\.jsx?$/, loader: '6to5-loader' },
-			{ test: /\.json$/, loader: 'json' },
+			{ test: /\.jsx?$/, loader: 'babel-loader' },
 		],
 	},
 	devtool: '#inline-source-map',
