@@ -1,18 +1,19 @@
 var path = require('path');
 
 module.exports = {
+	mode: process.NODE_ENV === 'production' ? 'production' : 'development',
 	entry: './client.js',
 	output: {
 		path: path.join(__dirname, 'static'),
 		filename: 'app.js',
 	},
 	resolve: {
-		extensions: ['', '.webpack.js', '.web.js', '.js', '.json'],
+		extensions: ['.webpack.js', '.web.js', '.js', '.json'],
 		alias: {
 		},
 	},
 	module: {
-		loaders: [
+		rules: [
 			{ test: /\.jsx?$/, loader: 'babel-loader' },
 		],
 	},
