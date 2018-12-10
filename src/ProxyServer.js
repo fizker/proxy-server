@@ -23,13 +23,13 @@ class ProxyServer {
 			this.proxy.web(req, res, { target: this.url })
 		})
 
-		return Promise.nfcall(this.server.listen.bind(this.server), this.port)
+		return new Promise((res, rej) => this.server.listen(this.port, (err) => err ? rej(err) : res()))
 			.then(()=>{this._isOpen = true})
 	}
 
 	stop() {
 		if(!this.isOpen()) return Promise.resolve()
-		return Promise.nfcall(this.server.close.bind(this.server))
+		return new Promise((res, rej) => this.server.close((err) => err ? rej(err) : res()))
 			.then(()=>{this._isOpen = false})
 	}
 

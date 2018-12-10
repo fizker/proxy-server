@@ -1,6 +1,6 @@
 var storage = require('../../../src/storage/server')
 
-var fs = require('fs')
+var fs = require('fs').promises
 var deepCopy = require('fmerge')
 
 describe('unit/storage/server.js', function() {
@@ -12,14 +12,14 @@ describe('unit/storage/server.js', function() {
 		storage.clearData()
 
 		fzkes.fake(fs, 'readFile')
-			.callsArg({ arguments: [ null, JSON.stringify({
+			.returns(Promise.resolve(JSON.stringify({
 				url: 'abc',
 				proxies: this.proxies,
-			}) ] })
+			})))
 		fzkes.fake(fs, 'writeFile')
 			.calls((url, data, cb) => {
 				this.lastWrittenData = JSON.parse(data)
-				cb()
+				return Promise.resolve()
 			})
 	})
 

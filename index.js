@@ -1,5 +1,3 @@
-require('promise-helpers')
-
 var settings = require('./src/settings')
 var server = require('./src/server')
 
@@ -23,4 +21,4 @@ server({
 	.then(function() {
 		console.log('Server running at ' + PORT)
 	})
-	.done()
+	.catch(e => console.error(e.stack || e.message))

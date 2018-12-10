@@ -1,4 +1,4 @@
-var fs = require('fs')
+var fs = require('fs').promises
 
 var settings = require('../settings')
 
@@ -23,13 +23,13 @@ module.exports = {
 function ensureData() {
 	if(data) return Promise.resolve()
 
-	return Promise.nfcall(fs.readFile, settings.storage, 'utf8')
+	return fs.readFile(settings.storage, 'utf8')
 		.catch(()=>'{"url":null,"proxies":[]}')
 		.then(JSON.parse)
 		.then(d => data = d)
 }
 function saveData() {
-	return Promise.nfcall(fs.writeFile, settings.storage, JSON.stringify(data))
+	return fs.writeFile(settings.storage, JSON.stringify(data))
 }
 
 function getUrl() {

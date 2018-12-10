@@ -1,6 +1,3 @@
-require('whatwg-fetch')
-require('promise-helpers')
-
 var React = require('react')
 import ReactDOM from 'react-dom'
 
