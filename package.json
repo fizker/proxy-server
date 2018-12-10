@@ -5,6 +5,7 @@
   "main": "index.js",
   "dependencies": {
     "@babel/core": "^7.2.0",
+    "@babel/plugin-proposal-class-properties": "^7.2.1",
     "@babel/preset-env": "^7.2.0",
     "@babel/preset-react": "^7.0.0",
     "babel-loader": "^8.0.4",
@@ -13,7 +14,8 @@
     "express": "^4.16.4",
     "http-proxy": "^1.17.0",
     "promise-helpers": "^0.2.0",
-    "react": "^0.12.2",
+    "react": "^16.6.3",
+    "react-dom": "^16.6.3",
     "webpack": "^4.27.1",
     "webpack-cli": "^3.1.2",
     "whatwg-fetch": "^0.10.1"
@@ -22,7 +24,8 @@
     "chai": "^4.2.0",
     "fmerge": "^1.2.0",
     "fzkes": "^0.15.0",
-    "mocha": "^5.2.0"
+    "mocha": "^5.2.0",
+    "nodemon": "^1.18.7"
   },
   "scripts": {
     "start": "webpack && node index.js",

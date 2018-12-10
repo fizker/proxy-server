@@ -1,16 +1,16 @@
 var React = require('react')
 
-var ProxyProp = require('../props/Proxy')
+//var ProxyProp = require('../props/Proxy')
 var Proxy = require('./Proxy')
 
 var storage = require('../storage/client')
 
-module.exports = React.createClass({ displayName: 'Proxies',
-	propTypes: {
-		proxies: React.PropTypes.arrayOf(ProxyProp).isRequired,
-		performAction: React.PropTypes.func.isRequired,
-	},
-	render: function() {
+module.exports = class Proxies extends React.Component {
+//	propTypes: {
+//		proxies: React.PropTypes.arrayOf(ProxyProp).isRequired,
+//		performAction: React.PropTypes.func.isRequired,
+//	},
+	render() {
 		return <div>
 			<h1>Proxies</h1>
 			{this.props.proxies.map(proxy => <Proxy
@@ -24,9 +24,9 @@ module.exports = React.createClass({ displayName: 'Proxies',
 				validateProxy={this.validateProxy}
 			/>
 		</div>
-	},
+	}
 
-	validateProxy: function(old, proxy) {
+	validateProxy = (old, proxy) => {
 		if(old && old.localPort == proxy.localPort) {
 			return null
 		}
@@ -36,15 +36,15 @@ module.exports = React.createClass({ displayName: 'Proxies',
 		}
 
 		return null
-	},
+	}
 
-	onDeleteProxy: function(proxy) {
+	onDeleteProxy = (proxy) => {
 		this.props.performAction(()=>storage.proxies.delete(proxy))
-	},
-	onChangeProxy: function(old, proxy) {
+	}
+	onChangeProxy = (old, proxy) => {
 		this.props.performAction(()=>storage.proxies.update(old, proxy))
-	},
-	onCreateProxy: function(proxy) {
+	}
+	onCreateProxy = (proxy) => {
 		this.props.performAction(()=>storage.proxies.set(proxy))
-	},
-})
+	}
+}

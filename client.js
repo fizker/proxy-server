@@ -2,8 +2,9 @@ require('whatwg-fetch')
 require('promise-helpers')
 
 var React = require('react')
+import ReactDOM from 'react-dom'
 
 var data = JSON.parse(document.querySelector('#data').innerHTML)
 var App = require('./src/components/App')
 
-React.render(<App data={data}/>, document.body)
+ReactDOM.render(<App data={data}/>, document.body)

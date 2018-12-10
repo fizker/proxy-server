@@ -1,22 +1,25 @@
 var React = require('react')
 
-var ProxyProp = require('../props/Proxy')
+//var ProxyProp = require('../props/Proxy')
 
-module.exports = React.createClass({ displayName: 'Proxies',
-	propTypes: {
-		proxy: ProxyProp,
+function getInitialState() {
+	return {
+		localPort: null,
+		remotePort: null,
+	}
+}
 
-		validateProxy: React.PropTypes.func,
-		onChangeProxy: React.PropTypes.func,
-		onDelete: React.PropTypes.func,
-	},
-	getInitialState: function() {
-		return {
-			localPort: null,
-			remotePort: null,
-		}
-	},
-	render: function() {
+module.exports = class Proxies extends React.Component {
+//	propTypes: {
+//		proxy: ProxyProp,
+//
+//		validateProxy: React.PropTypes.func,
+//		onChangeProxy: React.PropTypes.func,
+//		onDelete: React.PropTypes.func,
+//	},
+	state = getInitialState()
+
+	render() {
 		var proxy = this.props.proxy || {}
 		var localPort = this.state.localPort || proxy.localPort || ''
 		var remotePort = proxy.localPort == proxy.remotePort ? '' : proxy.remotePort
@@ -55,7 +58,7 @@ module.exports = React.createClass({ displayName: 'Proxies',
 			}
 			<button
 				type="button"
-				onClick={(e)=>{e.preventDefault();this.setState(this.getInitialState())}}
+				onClick={(e)=>{e.preventDefault();this.setState(getInitialState())}}
 				disabled={!hasChanges}
 			>
 				Revert
@@ -68,9 +71,9 @@ module.exports = React.createClass({ displayName: 'Proxies',
 			</button>
 			<div className="validation">{validation}</div>
 		</form>
-	},
+	}
 
-	onChange: function(prop, e) {
+	onChange = (prop, e) => {
 		if(!this.props.onChangeProxy) return
 
 		var val = +e.target.value || null
@@ -83,9 +86,9 @@ module.exports = React.createClass({ displayName: 'Proxies',
 		this.setState({
 			[prop]: val
 		})
-	},
+	}
 
-	onSubmit: function(e) {
+	onSubmit = (e) => {
 		e.preventDefault()
 
 		var proxy = this.props.proxy || {}
@@ -109,5 +112,5 @@ module.exports = React.createClass({ displayName: 'Proxies',
 		}
 
 		this.props.onChangeProxy && this.props.onChangeProxy(result)
-	},
-})
+	}
+}

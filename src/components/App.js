@@ -3,20 +3,20 @@ var React = require('react')
 var Url = require('./Url')
 var Proxies = require('./Proxies')
 
-var ProxyProp = require('../props/Proxy')
+//var ProxyProp = require('../props/Proxy')
 
 var storage = require('../storage/client')
 
-module.exports = React.createClass({ displayName: 'App',
-	propTypes: {
-		data: React.PropTypes.shape({
-			url: React.PropTypes.string,
-			proxies: React.PropTypes.arrayOf(ProxyProp).isRequired,
-			proxyRunning: React.PropTypes.bool,
-			ip: React.PropTypes.string,
-		})
-	},
-	render: function() {
+module.exports = class App extends React.Component {
+//	propTypes: {
+//		data: React.PropTypes.shape({
+//			url: React.PropTypes.string,
+//			proxies: React.PropTypes.arrayOf(ProxyProp).isRequired,
+//			proxyRunning: React.PropTypes.bool,
+//			ip: React.PropTypes.string,
+//		})
+//	},
+	render() {
 		var data = this.props.data
 		return <div>
 			<button onClick={this.toggleServer}>{data.proxyRunning ? 'Turn off' : 'Turn on'}</button>
@@ -29,12 +29,12 @@ module.exports = React.createClass({ displayName: 'App',
 			<Url url={data.url} onChangeUrl={persistUrl} ip={data.ip}/>
 			<Proxies proxies={data.proxies} performAction={performAction}/>
 		</div>
-	},
+	}
 
-	toggleServer: function() {
+	toggleServer = () => {
 		performAction(()=>storage.status.toggle())
-	},
-})
+	}
+}
 
 function persistUrl(url) {
 	performAction(()=>storage.url.set(url))

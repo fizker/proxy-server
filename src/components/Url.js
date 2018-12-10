@@ -1,18 +1,17 @@
 var React = require('react')
 var urlModule = require('url')
 
-module.exports = React.createClass({ displayName: 'Url',
-	propTypes: {
-		url: React.PropTypes.string,
-		onChangeUrl: React.PropTypes.func,
-		ip: React.PropTypes.string,
-	},
-	getInitialState: function() {
-		return {
-			url: null,
-		}
-	},
-	render: function() {
+module.exports = class Url extends React.Component {
+//	propTypes: {
+//		url: React.PropTypes.string,
+//		onChangeUrl: React.PropTypes.func,
+//		ip: React.PropTypes.string,
+//	},
+	state = {
+		url: null,
+	}
+
+	render() {
 		var url = this.getURL() || {}
 
 		return <form onSubmit={this.onSubmit}>
@@ -38,13 +37,13 @@ module.exports = React.createClass({ displayName: 'Url',
 				</button>
 			</div>}
 		</form>
-	},
+	}
 
-	getURL: function() {
+	getURL() {
 		var url = this.state.url || this.props.url
 		return url && urlModule.parse(url)
-	},
-	useIP: function() {
+	}
+	useIP() {
 		var url = this.getURL()
 		var newState
 		if(url) {
@@ -55,19 +54,19 @@ module.exports = React.createClass({ displayName: 'Url',
 		}
 
 		this.setState({ url: newState }, ()=>this.onSubmit())
-	},
-	onUseIPClicked: function(e) {
+	}
+	onUseIPClicked = (e) => {
 		e.preventDefault()
 		this.useIP()
-	},
-	onChange: function(e) {
+	}
+	onChange = (e) => {
 		var newUrl = e.target.value
 		if(newUrl == this.props.url) {
 			newUrl = null
 		}
 		this.setState({ url: newUrl })
-	},
-	onSubmit: function(e) {
+	}
+	onSubmit = (e) => {
 		e && e.preventDefault()
 
 		var newUrl = this.state.url
@@ -79,5 +78,5 @@ module.exports = React.createClass({ displayName: 'Url',
 		if(this.props.onChangeUrl && newUrl != this.props.url) {
 			this.props.onChangeUrl(newUrl)
 		}
-	},
-})
+	}
+}
