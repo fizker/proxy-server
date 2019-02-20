@@ -1,0 +1,14 @@
+[ignore]
+
+[include]
+
+[libs]
+
+[lints]
+all=error
+# dynamic-export is broken in 0.93
+dynamic-export=off
+
+[options]
+
+[strict]
