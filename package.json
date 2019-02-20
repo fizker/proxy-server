@@ -21,6 +21,7 @@
   "devDependencies": {
     "chai": "^4.2.0",
     "flow-bin": "^0.93.0",
+    "flow-typed": "^2.5.1",
     "fmerge": "^1.2.0",
     "fzkes": "^0.15.0",
     "mocha": "^5.2.0",
