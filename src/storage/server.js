@@ -9,7 +9,7 @@ export opaque type $NonEmptyString = {
 }
 
 export type Proxy = {|
-	url: ?string,
+	url?: ?string,
 	localPort: number,
 	remotePort: number,
 |}
