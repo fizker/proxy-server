@@ -22,8 +22,7 @@ export default class Url extends React.Component<Props, State> {
 
 		return <form onSubmit={this.onSubmit}>
 			<input
-				// flowlint-next-line sketchy-null-string:warn
-				value={this.state.url || this.props.url || ''}
+				value={this.state.url == null ? this.props.url || '' : this.state.url}
 				onChange={this.onChange}
 			/>
 			<button
@@ -82,8 +81,16 @@ export default class Url extends React.Component<Props, State> {
 
 		var newUrl = this.state.url
 
+		if(newUrl === '') {
+			newUrl = null
+		}
+
 		if(newUrl != null && !/^[a-z][a-z0-9_]+:\/\//.test(newUrl)) {
 			newUrl = 'http://' + newUrl
+		}
+
+		if(newUrl !== this.state.url) {
+			this.setState({ url: newUrl })
 		}
 
 		if(this.props.onChangeUrl && newUrl != this.props.url && newUrl != null) {
