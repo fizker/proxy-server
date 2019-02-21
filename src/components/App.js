@@ -2,8 +2,8 @@
 
 import * as React from 'react'
 
-import Url from './Url'
-import Proxies from './Proxies'
+import CreateDestinationView from './CreateDestinationView'
+import DestinationView from './DestinationView'
 import storage from '../storage/client'
 
 import type { ClientData } from '../server'
@@ -14,30 +14,36 @@ type Props = {|
 
 export default class App extends React.Component<Props> {
 	render() {
-		var data = this.props.data
-		return <div>
-			<button onClick={this.toggleServer}>{data.proxyRunning ? 'Turn off' : 'Turn on'}</button>
-			<span>
-				<span
-					className={'running-indicator running-indicator--' + (data.proxyRunning ? 'on': 'off')}
-				/>
-				{data.proxyRunning ? 'Running' : 'Stopped'}
-			</span>
-			<Url url={data.url||''} onChangeUrl={persistUrl} ip={data.ip}/>
-			<Proxies proxies={data.proxies} performAction={performAction}/>
-		</div>
-	}
+		const { data: { proxies, url, proxyRunning, ip } } = this.props
 
-	toggleServer = () => {
-		performAction(()=>storage.status.toggle())
+		if(url == null) {
+			return <CreateDestinationView
+				onCreate={persistUrl}
+			/>
+		}
+		return <DestinationView
+			ip={ip}
+			destination={{
+				isRunning: proxyRunning,
+				proxies,
+				url,
+			}}
+			onToggleProxies={onToggleServer}
+			performAction={performAction}
+			onChangeURL={persistUrl}
+		/>
 	}
+}
+
+function onToggleServer() {
+	performAction(()=>storage.status.toggle())
 }
 
 function persistUrl(url) {
 	performAction(()=>storage.url.set(url))
 }
 
-function performAction(fn) {
+function performAction(fn:()=>Promise<mixed>) {
 	fn()
 		.then(()=>location.reload())
 		.catch(err => console.error(err.stack))
