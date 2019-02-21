@@ -43,11 +43,10 @@ function deleteProxy(proxy:Proxy) : Promise<Response> {
 }
 
 function updateProxy(old:Proxy, proxy:Proxy) : Promise<void> {
-	// TODO: essentially dead code; proxies do not have a .port prop
-	//var port = old.port
+	const port = old.localPort
 	return Promise.all([
 		setProxy(proxy),
-		//port != proxy.port && deleteProxy(port),
+		port !== proxy.localPort && deleteProxy(old),
 	])
 	.then(() => {})
 }
