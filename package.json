@@ -21,6 +21,7 @@
     "webpack-cli": "^3.1.2"
   },
   "devDependencies": {
+    "@babel/register": "^7.0.0",
     "chai": "^4.2.0",
     "flow-bin": "^0.93.0",
     "flow-typed": "^2.5.1",
