@@ -17,6 +17,7 @@ module.exports = class Proxies extends React.Component<Props> {
 		return <div>
 			<h1>Proxies</h1>
 			{this.props.proxies.map(proxy => <ProxyView
+				key={proxy.localPort}
 				proxy={proxy}
 				onChangeProxy={p=>this.onChangeProxy(proxy, p)}
 				onDelete={()=>this.onDeleteProxy(proxy)}

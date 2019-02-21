@@ -12,7 +12,7 @@ if(bootstrappedData == null) {
 const data:ClientData = JSON.parse(bootstrappedData.innerHTML)
 var App = require('./src/components/App')
 
-const rootContainer = document.body
+const rootContainer = document.querySelector('#root')
 if(rootContainer == null) {
 	throw new Error('root container not found')
 }

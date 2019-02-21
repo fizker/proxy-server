@@ -49,7 +49,9 @@ module.exports = function(options:Options) : Promise<void> {
 					<script type="application/json" id="data">
 						${JSON.stringify(data)}
 					</script>
-					Loading…
+					<div id="root">
+						Loading…
+					</div>
 					<script src="/app.js"></script>
 				`)
 			})
