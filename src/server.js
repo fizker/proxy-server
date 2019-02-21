@@ -30,9 +30,9 @@ export default function(options:Options) : Promise<void> {
 
 	app.get('/', function(req, res:express$Response) {
 		Promise.resolve()
-			.then(() => {
+			.then(async () => {
 				if(proxies && !proxies.every(p => p.isOpen())) {
-					var p = Promise.all(proxies.map(p => p.stop()))
+					await Promise.all(proxies.map(p => p.stop()))
 					proxies = null
 				}
 			})
@@ -132,6 +132,6 @@ export default function(options:Options) : Promise<void> {
 	})
 }
 
-function handleError(res) {
-	return error=>res.set('content-type', 'text/plain').status(500).send(error.stack)
+function handleError(res:express$Response) : (Error) => void {
+	return error=>{res.set('content-type', 'text/plain').status(500).send(error.stack)}
 }
