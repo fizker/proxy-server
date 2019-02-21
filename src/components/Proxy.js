@@ -12,34 +12,38 @@ function getInitialState() : State {
 }
 
 type Props = {|
-	proxy?: Proxy,
+	validateProxy: (?Proxy, Proxy) => ?string,
+	onChangeProxy: (Proxy) => void,
 
-	onChangeProxy?: (Proxy) => void,
-	validateProxy?: (?Proxy, Proxy) => ?string,
+	proxy?: Proxy,
 	onDelete?: () => void,
 |}
 
 type State = {|
-	localPort: ?number,
-	remotePort: ?number,
+	localPort: ?string,
+	remotePort: ?string,
 |}
 
 export default class Proxies extends React.Component<Props, State> {
 	state = getInitialState()
 
 	render() {
-		var proxy = this.props.proxy || {}
-		// flowlint-next-line sketchy-null-number:warn
-		var localPort = this.state.localPort || proxy.localPort || ''
-		var remotePort = proxy.localPort == proxy.remotePort ? '' : proxy.remotePort
-		if(this.state.remotePort != null) {
-			remotePort = this.state.remotePort
-		}
-		let hasChanges = this.state.localPort != null || this.state.remotePort != null
+		const proxy = this.props.proxy || {}
 
-		let validation = this.props.validateProxy && this.props.validateProxy(this.props.proxy, {
-			localPort: localPort||0,
-			remotePort: remotePort||0,
+		const localPort = this.state.localPort == null ? proxy.localPort || '' : this.state.localPort
+		const remotePort = this.state.remotePort == null
+			? proxy.localPort == proxy.remotePort ? '' : proxy.remotePort
+			: this.state.remotePort
+
+		const isSaveable = Boolean(+this.state.localPort) ||
+			(
+				this.state.remotePort === '' ||
+				Boolean(+this.state.remotePort)
+			)
+
+		const validation = this.props.validateProxy && this.props.validateProxy(this.props.proxy, {
+			localPort: +localPort,
+			remotePort: +remotePort,
 		})
 
 		return <form onSubmit={this.onSubmit}>
@@ -68,14 +72,17 @@ export default class Proxies extends React.Component<Props, State> {
 			}
 			<button
 				type="button"
-				onClick={(e)=>{e.preventDefault();this.setState(getInitialState())}}
-				disabled={!hasChanges}
+				onClick={(e)=>{
+					e.preventDefault()
+					this.setState(getInitialState())
+				}}
+				disabled={!isSaveable}
 			>
 				Revert
 			</button>
 			<button
 				type="submit"
-				disabled={!hasChanges || !!validation}
+				disabled={!isSaveable || !!validation}
 			>
 				Save
 			</button>
@@ -86,10 +93,13 @@ export default class Proxies extends React.Component<Props, State> {
 	onChange = (prop:'localPort'|'remotePort', e:SyntheticEvent<HTMLInputElement>) => {
 		if(!this.props.onChangeProxy) return
 
-		var val = +e.currentTarget.value || null
+		var val = e.currentTarget.value
 
 		let proxy = this.props.proxy || {}
-		if(proxy[prop] == val) {
+		if(proxy[prop].toString() === val) {
+			val = null
+		}
+		if(prop === 'remotePort' && val === '' && proxy.localPort === proxy.remotePort) {
 			val = null
 		}
 
@@ -103,15 +113,13 @@ export default class Proxies extends React.Component<Props, State> {
 
 		var proxy = this.props.proxy || {}
 		// flowlint-next-line sketchy-null-number:warn
-		var localPort = this.state.localPort || proxy.localPort
-		var remotePort = this.state.remotePort
-		if(remotePort == null || !Boolean(remotePort)) {
-			if(Boolean(proxy.remotePort) && remotePort == null) {
-				remotePort = proxy.remotePort
-			} else {
-				remotePort = localPort
-			}
-		}
+		const localPort = this.state.localPort == null ? proxy.localPort : +this.state.localPort
+		const remotePort = this.state.remotePort == null
+			? (proxy.remotePort == null
+			? localPort
+			: proxy.remotePort
+			)
+			: this.state.remotePort === '' ? localPort : +this.state.remotePort
 
 		var result = {
 			localPort,
