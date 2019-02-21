@@ -1,9 +1,9 @@
 // @flow
 
-var React = require('react')
+import * as React from 'react'
 
-var ProxyView = require('./Proxy')
-var storage = require('../storage/client')
+import ProxyView from './Proxy'
+import storage from '../storage/client'
 
 import type { Proxy } from '../storage/server'
 
@@ -12,7 +12,7 @@ type Props = {|
 	performAction: (()=>Promise<mixed>) => void,
 |}
 
-module.exports = class Proxies extends React.Component<Props> {
+export default class Proxies extends React.Component<Props> {
 	render() {
 		return <div>
 			<h1>Proxies</h1>

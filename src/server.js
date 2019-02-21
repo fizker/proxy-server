@@ -1,13 +1,13 @@
 // @flow
 
-var express = require('express')
-var path = require('path')
-var urlModule = require('url')
+import express from 'express'
+import path from 'path'
+import urlModule from 'url'
+import bodyParser from 'body-parser'
 
-var bodyParser = require('body-parser')
+import ProxyServer from './ProxyServer'
+import storage from './storage/server'
 
-var ProxyServer = require('./ProxyServer')
-var storage = require('./storage/server')
 import type { Data, Proxy } from './storage/server'
 
 export type ClientData = {
@@ -20,7 +20,7 @@ type Options = {
 	port: number,
 }
 
-module.exports = function(options:Options) : Promise<void> {
+export default function(options:Options) : Promise<void> {
 	var app = express()
 
 	var status = false

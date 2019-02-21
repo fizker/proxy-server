@@ -1,6 +1,6 @@
 // @flow
 
-var React = require('react')
+import * as React from 'react'
 
 import type { Proxy } from '../storage/server'
 
@@ -24,7 +24,7 @@ type State = {|
 	remotePort: ?number,
 |}
 
-module.exports = class Proxies extends React.Component<Props, State> {
+export default class Proxies extends React.Component<Props, State> {
 	state = getInitialState()
 
 	render() {

@@ -1,7 +1,7 @@
 // @flow
 
-var settings = require('./src/settings')
-var server = require('./src/server')
+import settings from './src/settings'
+import server from './src/server'
 
 if(require.main != module) {
 	// Included from tests or other node.js modules

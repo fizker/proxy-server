@@ -1,8 +1,8 @@
 // @flow
 
-var fs = require('fs').promises
+import { promises as fs } from 'fs'
 
-var settings = require('../settings')
+import settings from '../settings'
 
 export opaque type $NonEmptyString = {
 	value: string,
@@ -29,7 +29,7 @@ function NonEmptyString(input:?string) : ?$NonEmptyString {
 	}
 }
 
-module.exports = {
+export default {
 	getAll() : Promise<Data> { return ensureData().then(()=>data) },
 	clearData: () => data = null,
 

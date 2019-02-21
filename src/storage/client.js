@@ -5,7 +5,7 @@ import type { Proxy } from './server'
 const sendJSONHeaders = { 'content-type': 'application/json' }
 const fetchJSONHeaders = { 'accept': 'application/json' }
 
-module.exports = {
+export default {
 	proxies: {
 		delete: deleteProxy,
 		set: setProxy,

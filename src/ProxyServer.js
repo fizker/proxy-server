@@ -1,13 +1,13 @@
 // @flow
 
-var http = require('http')
-var httpProxy = require('http-proxy')
+import http from 'http'
+import httpProxy from 'http-proxy'
 
 interface HTTPProxy {
 	web(req: http.IncomingMessage, res: http.ServerResponse, options: { target: string }) : void
 }
 
-class ProxyServer {
+export default class ProxyServer {
 	port: number
 	url: string
 	proxy: HTTPProxy
@@ -50,5 +50,3 @@ class ProxyServer {
 		return !!this._isOpen
 	}
 }
-
-module.exports = ProxyServer

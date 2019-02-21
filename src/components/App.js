@@ -1,19 +1,18 @@
 // @flow
 
-var React = require('react')
+import * as React from 'react'
 
-var Url = require('./Url')
-var Proxies = require('./Proxies')
+import Url from './Url'
+import Proxies from './Proxies'
+import storage from '../storage/client'
 
 import type { ClientData } from '../server'
-
-var storage = require('../storage/client')
 
 type Props = {|
 	data: ClientData,
 |}
 
-module.exports = class App extends React.Component<Props> {
+export default class App extends React.Component<Props> {
 	render() {
 		var data = this.props.data
 		return <div>

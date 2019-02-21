@@ -1,7 +1,9 @@
 // @flow
 
-var React = require('react')
+import * as React from 'react'
 import ReactDOM from 'react-dom'
+
+import App from './src/components/App'
 
 import type { ClientData } from './src/server'
 
@@ -10,7 +12,6 @@ if(bootstrappedData == null) {
 	throw new Error('bootstrapped data not found')
 }
 const data:ClientData = JSON.parse(bootstrappedData.innerHTML)
-var App = require('./src/components/App')
 
 const rootContainer = document.querySelector('#root')
 if(rootContainer == null) {

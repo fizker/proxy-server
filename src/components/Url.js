@@ -1,7 +1,7 @@
 // @flow
 
-var React = require('react')
-var urlModule = require('url')
+import * as React from 'react'
+import urlModule from 'url'
 
 type Props = {|
 	url: string,
@@ -12,7 +12,7 @@ type State = {|
 	url: ?string,
 |}
 
-module.exports = class Url extends React.Component<Props, State> {
+export default class Url extends React.Component<Props, State> {
 	state = {
 		url: null,
 	}
