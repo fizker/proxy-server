@@ -12,7 +12,7 @@ function getInitialState() : State {
 }
 
 type Props = {|
-	validateProxy: (?Proxy, Proxy) => ?string,
+	validateProxy: (Proxy) => ?string,
 	onChangeProxy: (Proxy) => void,
 
 	proxy?: Proxy,
@@ -41,7 +41,7 @@ export default class Proxies extends React.Component<Props, State> {
 				Boolean(+this.state.remotePort)
 			)
 
-		const validation = this.props.validateProxy && this.props.validateProxy(this.props.proxy, {
+		const validation = this.props.validateProxy && this.props.validateProxy({
 			localPort: +localPort,
 			remotePort: +remotePort,
 		})
@@ -93,8 +93,8 @@ export default class Proxies extends React.Component<Props, State> {
 	onChangeLocalPort = (e:SyntheticEvent<HTMLInputElement>) => {
 		let val = e.currentTarget.value
 
-		let proxy = this.props.proxy || {}
-		if(proxy.localPort.toString() === val) {
+		const proxy = this.props.proxy
+		if(proxy && proxy.localPort.toString() === val) {
 			val = null
 		}
 
@@ -106,12 +106,14 @@ export default class Proxies extends React.Component<Props, State> {
 	onChangeRemotePort = (e:SyntheticEvent<HTMLInputElement>) => {
 		let val = e.currentTarget.value
 
-		const proxy = this.props.proxy || {}
-		if(proxy.remotePort.toString() === val) {
-			val = null
-		}
-		if(val === '' && proxy.localPort === proxy.remotePort) {
-			val = null
+		const proxy = this.props.proxy
+		if(proxy != null) {
+			if(proxy.remotePort.toString() === val) {
+				val = null
+			}
+			if(val === '' && proxy.localPort === proxy.remotePort) {
+				val = null
+			}
 		}
 
 		this.setState({
@@ -136,7 +138,7 @@ export default class Proxies extends React.Component<Props, State> {
 			remotePort,
 		}
 
-		if(this.props.validateProxy && this.props.validateProxy(this.props.proxy, result)) {
+		if(this.props.validateProxy && this.props.validateProxy(result)) {
 			return
 		}
 

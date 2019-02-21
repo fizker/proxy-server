@@ -7,6 +7,7 @@ import DestinationView from './DestinationView'
 import storage from '../storage/client'
 
 import type { ClientData } from '../server'
+import type { Proxy } from '../storage/server'
 
 type Props = {|
 	data: ClientData,
@@ -29,10 +30,22 @@ export default class App extends React.Component<Props> {
 				url,
 			}}
 			onToggleProxies={onToggleServer}
-			performAction={performAction}
+			onDeleteProxy={onDeleteProxy}
+			onUpdateProxy={onUpdateProxy}
+			onCreateProxy={onCreateProxy}
 			onChangeURL={persistUrl}
 		/>
 	}
+}
+
+function onDeleteProxy(proxy:Proxy) : void {
+	performAction(()=>storage.proxies.delete(proxy))
+}
+function onUpdateProxy(old:Proxy, proxy:Proxy) : void {
+	performAction(()=>storage.proxies.update(old, proxy))
+}
+function onCreateProxy(proxy:Proxy) : void {
+	performAction(()=>storage.proxies.set(proxy))
 }
 
 function onToggleServer() {

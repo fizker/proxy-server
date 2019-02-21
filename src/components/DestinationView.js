@@ -3,7 +3,7 @@
 import * as React from 'react'
 
 import URLView from './Url'
-import ProxiesView from './Proxies'
+import ProxyView from './Proxy'
 
 import type { Proxy } from '../storage/server'
 
@@ -28,10 +28,12 @@ type Props = $ReadOnly<{|
 
 	onToggleProxies: () => void,
 	onChangeURL: (string) => void,
-	performAction: (()=>Promise<mixed>) => void,
+	onDeleteProxy: (Proxy) => void,
+	onUpdateProxy: (old:Proxy, updatedProxy:Proxy) => void,
+	onCreateProxy: (Proxy) => void,
 |}>
 
-export default function Server({ destination, ip, performAction, onChangeURL, onToggleProxies }:Props) {
+export default function Server({ destination, ip, onChangeURL, onToggleProxies, onDeleteProxy, onCreateProxy, onUpdateProxy }:Props) {
 	return <div>
 		<button onClick={onToggleProxies}>
 			{destination.isRunning ? 'Turn off' : 'Turn on'}
@@ -42,9 +44,31 @@ export default function Server({ destination, ip, performAction, onChangeURL, on
 			onChangeUrl={onChangeURL}
 			ip={ip}
 		/>
-		<ProxiesView
-			proxies={destination.proxies}
-			performAction={performAction}
-		/>
+		<div>
+			<h1>Proxies</h1>
+			{destination.proxies.map(proxy => <ProxyView
+				key={proxy.localPort}
+				proxy={proxy}
+				onChangeProxy={p => onUpdateProxy(proxy, p)}
+				onDelete={() => onDeleteProxy(proxy)}
+				validateProxy={p => validateProxy(destination.proxies, proxy, p)}
+			/>)}
+			<ProxyView
+				onChangeProxy={onCreateProxy}
+				validateProxy={(p) => validateProxy(destination.proxies, null, p)}
+			/>
+		</div>
 	</div>
+}
+
+function validateProxy(proxies:$ReadOnlyArray<Proxy>, old:?Proxy, proxy:Proxy) : ?string {
+	if(old && old.localPort == proxy.localPort) {
+		return null
+	}
+
+	if(proxies.find(p => p.localPort == proxy.localPort)) {
+		return 'Port-number is taken'
+	}
+
+	return null
 }
