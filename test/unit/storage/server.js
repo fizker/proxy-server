@@ -1,10 +1,13 @@
-var storage = require('../../../src/storage/server')
+import settings from '../../../src/settings'
+import storage from '../../../src/storage/server'
 
 var fs = require('fs').promises
 var deepCopy = require('fmerge')
 
 describe('unit/storage/server.js', function() {
 	beforeEach(function() {
+		settings.storage = 'data/url'
+		settings.port = 1234
 		this.proxies = [
 			{ url: 'abc', localPort: 1, remotePort: 11 },
 			{ url: 'abc', localPort: 2, remotePort: 22 },

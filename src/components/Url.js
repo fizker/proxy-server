@@ -1,12 +1,18 @@
+// @flow
+
 var React = require('react')
 var urlModule = require('url')
 
-module.exports = class Url extends React.Component {
-//	propTypes: {
-//		url: React.PropTypes.string,
-//		onChangeUrl: React.PropTypes.func,
-//		ip: React.PropTypes.string,
-//	},
+type Props = {|
+	url: string,
+	onChangeUrl: (string) => void,
+	ip: string,
+|}
+type State = {|
+	url: ?string,
+|}
+
+module.exports = class Url extends React.Component<Props, State> {
 	state = {
 		url: null,
 	}
@@ -16,12 +22,14 @@ module.exports = class Url extends React.Component {
 
 		return <form onSubmit={this.onSubmit}>
 			<input
+				// flowlint-next-line sketchy-null-string:warn
 				value={this.state.url || this.props.url || ''}
 				onChange={this.onChange}
 			/>
 			<button
 				disabled={this.state.url == null}
-				type="button" onClick={()=>this.setState({ url: null })}
+				type="button"
+				onClick={()=>this.setState({ url: null })}
 			>
 				Reset
 			</button>
@@ -39,15 +47,18 @@ module.exports = class Url extends React.Component {
 		</form>
 	}
 
-	getURL() {
-		var url = this.state.url || this.props.url
-		return url && urlModule.parse(url)
+	getURL() : ?url$urlObject {
+		const url = this.state.url == null || this.state.url === '' ? this.props.url : this.state.url
+		return Boolean(url) ? urlModule.parse(url) : null
 	}
-	useIP() {
+	useIP() : void {
 		var url = this.getURL()
 		var newState
 		if(url) {
-			url.host = this.props.ip
+			url = {
+				...url,
+				host: this.props.ip,
+			}
 			newState = urlModule.format(url).replace(/\/$/, '')
 		} else {
 			newState = 'http://' + this.props.ip
@@ -55,27 +66,27 @@ module.exports = class Url extends React.Component {
 
 		this.setState({ url: newState }, ()=>this.onSubmit())
 	}
-	onUseIPClicked = (e) => {
+	onUseIPClicked = (e:SyntheticEvent<HTMLFormElement>) : void => {
 		e.preventDefault()
 		this.useIP()
 	}
-	onChange = (e) => {
-		var newUrl = e.target.value
+	onChange = (e:SyntheticEvent<HTMLInputElement>) : void => {
+		let newUrl = e.currentTarget.value
 		if(newUrl == this.props.url) {
 			newUrl = null
 		}
 		this.setState({ url: newUrl })
 	}
-	onSubmit = (e) => {
+	onSubmit = (e?:SyntheticEvent<HTMLFormElement>) : void => {
 		e && e.preventDefault()
 
 		var newUrl = this.state.url
 
-		if(newUrl && !/^[a-z][a-z0-9_]+:\/\//.test(newUrl)) {
+		if(newUrl != null && !/^[a-z][a-z0-9_]+:\/\//.test(newUrl)) {
 			newUrl = 'http://' + newUrl
 		}
 
-		if(this.props.onChangeUrl && newUrl != this.props.url) {
+		if(this.props.onChangeUrl && newUrl != this.props.url && newUrl != null) {
 			this.props.onChangeUrl(newUrl)
 		}
 	}

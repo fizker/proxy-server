@@ -1,21 +1,19 @@
+// @flow
+
 var React = require('react')
 
 var Url = require('./Url')
 var Proxies = require('./Proxies')
 
-//var ProxyProp = require('../props/Proxy')
+import type { ClientData } from '../server'
 
 var storage = require('../storage/client')
 
-module.exports = class App extends React.Component {
-//	propTypes: {
-//		data: React.PropTypes.shape({
-//			url: React.PropTypes.string,
-//			proxies: React.PropTypes.arrayOf(ProxyProp).isRequired,
-//			proxyRunning: React.PropTypes.bool,
-//			ip: React.PropTypes.string,
-//		})
-//	},
+type Props = {|
+	data: ClientData,
+|}
+
+module.exports = class App extends React.Component<Props> {
 	render() {
 		var data = this.props.data
 		return <div>
@@ -26,7 +24,7 @@ module.exports = class App extends React.Component {
 				/>
 				{data.proxyRunning ? 'Running' : 'Stopped'}
 			</span>
-			<Url url={data.url} onChangeUrl={persistUrl} ip={data.ip}/>
+			<Url url={data.url||''} onChangeUrl={persistUrl} ip={data.ip}/>
 			<Proxies proxies={data.proxies} performAction={performAction}/>
 		</div>
 	}

@@ -1,16 +1,29 @@
-'use strict'
+// @flow
+
 var http = require('http')
 var httpProxy = require('http-proxy')
 
+interface HTTPProxy {
+	web(req: http.IncomingMessage, res: http.ServerResponse, options: { target: string }) : void
+}
+
 class ProxyServer {
-	constructor(url, port) {
+	port: number
+	url: string
+	proxy: HTTPProxy
+	server: http.Server
+	_isOpen: boolean
+
+	constructor(url:string, port:number) {
 		this.port = port
 		this.url = url
 		this.proxy = httpProxy.createProxyServer({ secure: false })
 			.on('error', e=>this.stop())
+
+		this._isOpen = false
 	}
 
-	start() {
+	start() : Promise<void> {
 		if(this.isOpen()) return Promise.resolve()
 
 		this.server = http.createServer((req, res) => {
@@ -27,13 +40,13 @@ class ProxyServer {
 			.then(()=>{this._isOpen = true})
 	}
 
-	stop() {
+	stop() : Promise<void> {
 		if(!this.isOpen()) return Promise.resolve()
 		return new Promise((res, rej) => this.server.close((err) => err ? rej(err) : res()))
 			.then(()=>{this._isOpen = false})
 	}
 
-	isOpen() {
+	isOpen() : boolean {
 		return !!this._isOpen
 	}
 }

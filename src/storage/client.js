@@ -1,3 +1,7 @@
+// @flow
+
+import type { Proxy } from './server'
+
 const sendJSONHeaders = { 'content-type': 'application/json' }
 const fetchJSONHeaders = { 'accept': 'application/json' }
 
@@ -18,7 +22,7 @@ module.exports = {
 	},
 }
 
-function setUrl(url) {
+function setUrl(url:string) : Promise<Response> {
 	return fetch('/url', {
 		method: 'put',
 		body: JSON.stringify(url),
@@ -26,7 +30,7 @@ function setUrl(url) {
 	})
 }
 
-function setProxy(proxy) {
+function setProxy(proxy:Proxy) : Promise<Response> {
 	return fetch('/proxies/' + proxy.localPort, {
 		method: 'put',
 		body: JSON.stringify(proxy),
@@ -34,23 +38,25 @@ function setProxy(proxy) {
 	})
 }
 
-function deleteProxy(portOrProxy) {
-	return fetch('/proxies/' + portOrProxy.localPort || portOrProxy, { method: 'delete' })
+function deleteProxy(proxy:Proxy) : Promise<Response> {
+	return fetch('/proxies/' + proxy.localPort, { method: 'delete' })
 }
 
-function updateProxy(old, proxy) {
-	var port = old.port
+function updateProxy(old:Proxy, proxy:Proxy) : Promise<void> {
+	// TODO: essentially dead code; proxies do not have a .port prop
+	//var port = old.port
 	return Promise.all([
 		setProxy(proxy),
-		port != proxy.port && deleteProxy(port),
+		//port != proxy.port && deleteProxy(port),
 	])
+	.then(() => {})
 }
 
-function toggle() {
+function toggle() : Promise<Response> {
 	return fetch('/toggle-server', { method: 'post' })
 }
 
-function getIP() {
+function getIP() : Promise<string> {
 	return fetch('/ip', { headers: fetchJSONHeaders })
 	.then(xhr => xhr.json())
 }

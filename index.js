@@ -1,3 +1,5 @@
+// @flow
+
 var settings = require('./src/settings')
 var server = require('./src/server')
 
@@ -7,18 +9,17 @@ if(require.main != module) {
 		open: server,
 		settings: settings,
 	}
-	return
-}
+} else {
+	const PORT = Number(process.env.PORT) || 8088
 
-var PORT = process.env.PORT || 8088
+	settings.port = PORT
+	settings.storage = __dirname + '/data.json'
 
-settings.port = PORT
-settings.storage = __dirname + '/data.json'
-
-server({
-	port: PORT
-})
-	.then(function() {
-		console.log('Server running at ' + PORT)
+	server({
+		port: PORT
 	})
-	.catch(e => console.error(e.stack || e.message))
+		.then(function() {
+			console.log('Server running at ' + PORT)
+		})
+		.catch(e => console.error(e.stack || e.message))
+}
