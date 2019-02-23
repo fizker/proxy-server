@@ -3,7 +3,18 @@
     "@babel/plugin-proposal-class-properties"
   ],
   "presets": [
-    "@babel/preset-env",
+    [ "@babel/preset-env", {
+      "useBuiltIns": "entry",
+      "targets": {
+        "safari": "12",
+        "chrome": "70",
+        "firefox": "65",
+        "node": "current"
+      },
+      "exclude": [
+        "@babel/plugin-transform-regenerator"
+      ]
+    } ],
     "@babel/preset-react",
     "@babel/preset-flow"
   ]
