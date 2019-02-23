@@ -6,6 +6,7 @@ import URLView from './Url'
 import ProxyView from './Proxy'
 
 import type { Proxy } from '../storage/server'
+import type { Destination } from '../transforms/destination'
 
 function RunIndicatorView({ isRunning }:{ isRunning: boolean }) {
 	return <span>
@@ -16,32 +17,33 @@ function RunIndicatorView({ isRunning }:{ isRunning: boolean }) {
 	</span>
 }
 
-type ProxyDestination = $ReadOnly<{
-	isRunning: boolean,
-	url: string,
-	proxies: $ReadOnlyArray<Proxy>,
-}>
-
 type Props = $ReadOnly<{|
-	destination: ProxyDestination,
+	destination: Destination,
 	ip: string,
 
-	onToggleProxies: () => void,
-	onChangeURL: (string) => void,
+	onToggleProxy: (Proxy) => void,
 	onDeleteProxy: (Proxy) => void,
 	onUpdateProxy: (old:Proxy, updatedProxy:Proxy) => void,
 	onCreateProxy: (Proxy) => void,
 |}>
 
-export default function Server({ destination, ip, onChangeURL, onToggleProxies, onDeleteProxy, onCreateProxy, onUpdateProxy }:Props) {
+export default function Server({ destination, ip, onToggleProxy, onDeleteProxy, onCreateProxy, onUpdateProxy }:Props) {
+	const firstProxy = destination.proxies[0]
 	return <div>
-		<button onClick={onToggleProxies}>
+		{firstProxy != null && <button onClick={() => onToggleProxy(firstProxy)}>
 			{destination.isRunning ? 'Turn off' : 'Turn on'}
-		</button>
+		</button>}
 		<RunIndicatorView isRunning={destination.isRunning} />
 		<URLView
 			url={destination.url}
-			onChangeUrl={onChangeURL}
+			onChangeUrl={url => {
+				destination.proxies.forEach(p => {
+					onUpdateProxy(p, {
+						...p,
+						url,
+					})
+				})
+			}}
 			ip={ip}
 		/>
 		<div>

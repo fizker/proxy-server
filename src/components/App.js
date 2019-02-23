@@ -5,36 +5,57 @@ import * as React from 'react'
 import CreateDestinationView from './CreateDestinationView'
 import DestinationView from './DestinationView'
 import storage from '../storage/client'
+import { createDestinationsForProxies } from '../transforms/destination'
 
 import type { ClientData } from '../server'
 import type { Proxy } from '../storage/server'
 
-type Props = {|
+type Props = $ReadOnly<{|
 	data: ClientData,
-|}
+|}>
 
-export default class App extends React.Component<Props> {
+type State = $ReadOnly<{|
+	newDestinationURL: ?string
+|}>
+
+export default class App extends React.Component<Props, State> {
+	state = {
+		newDestinationURL: null,
+	}
 	render() {
 		const { data: { proxies, url, proxyRunning, ip } } = this.props
+		const { newDestinationURL } = this.state
+		const destinations = createDestinationsForProxies(proxies)
 
-		if(url == null) {
-			return <CreateDestinationView
-				onCreate={persistUrl}
+		return <div>
+			{destinations.map(dest => <DestinationView
+				key={dest.url}
+				ip={ip}
+				destination={dest}
+
+				onDeleteProxy={onDeleteProxy}
+				onUpdateProxy={onUpdateProxy}
+				onCreateProxy={onCreateProxy}
+				onToggleProxy={onToggleServer}
+			/>)}
+			{ newDestinationURL == null
+			? <CreateDestinationView
+				onCreate={url => this.setState({ newDestinationURL: url })}
 			/>
-		}
-		return <DestinationView
-			ip={ip}
-			destination={{
-				isRunning: proxyRunning,
-				proxies,
-				url,
-			}}
-			onToggleProxies={onToggleServer}
-			onDeleteProxy={onDeleteProxy}
-			onUpdateProxy={onUpdateProxy}
-			onCreateProxy={onCreateProxy}
-			onChangeURL={persistUrl}
-		/>
+			: <DestinationView
+				ip={ip}
+				destination={{
+					url: newDestinationURL,
+					proxies: [],
+					isRunning: false,
+				}}
+
+				onDeleteProxy={onDeleteProxy}
+				onUpdateProxy={onUpdateProxy}
+				onCreateProxy={onCreateProxy}
+				onToggleProxy={onToggleServer}
+			/> }
+		</div>
 	}
 }
 
@@ -47,13 +68,8 @@ function onUpdateProxy(old:Proxy, proxy:Proxy) : void {
 function onCreateProxy(proxy:Proxy) : void {
 	performAction(()=>storage.proxies.set(proxy))
 }
-
-function onToggleServer() {
+function onToggleServer(proxy:Proxy) {
 	performAction(()=>storage.status.toggle())
-}
-
-function persistUrl(url) {
-	performAction(()=>storage.url.set(url))
 }
 
 function performAction(fn:()=>Promise<mixed>) {
