@@ -8,7 +8,7 @@ type Props = {|
 export default function CreateServerView({ onCreate }:Props) {
 	const [ url, setURL ] = React.useState('')
 
-	return <form onSubmit={() => onCreate(url)}>
+	return <form onSubmit={(e) => {e.preventDefault();onCreate(url)}}>
 		<input
 			value={url}
 			onChange={e => setURL(e.currentTarget.value)}
