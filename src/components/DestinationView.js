@@ -25,9 +25,10 @@ type Props = $ReadOnly<{|
 	onDeleteProxy: (Proxy) => void,
 	onUpdateProxy: (old:Proxy, updatedProxy:Proxy) => void,
 	onCreateProxy: (Proxy) => void,
+	validateProxy: (old:?Proxy, proxy:Proxy) => ?string,
 |}>
 
-export default function Server({ destination, ip, onToggleProxy, onDeleteProxy, onCreateProxy, onUpdateProxy }:Props) {
+export default function Server({ validateProxy, destination, ip, onToggleProxy, onDeleteProxy, onCreateProxy, onUpdateProxy }:Props) {
 	const firstProxy = destination.proxies[0]
 	return <div>
 		{firstProxy != null && <button onClick={() => onToggleProxy(firstProxy)}>
@@ -50,27 +51,17 @@ export default function Server({ destination, ip, onToggleProxy, onDeleteProxy, 
 			<h1>Proxies</h1>
 			{destination.proxies.map(proxy => <ProxyView
 				key={proxy.localPort}
+				url={destination.url}
 				proxy={proxy}
 				onChangeProxy={p => onUpdateProxy(proxy, p)}
 				onDelete={() => onDeleteProxy(proxy)}
-				validateProxy={p => validateProxy(destination.proxies, proxy, p)}
+				validateProxy={p => validateProxy(proxy, p)}
 			/>)}
 			<ProxyView
+				url={destination.url}
 				onChangeProxy={onCreateProxy}
-				validateProxy={(p) => validateProxy(destination.proxies, null, p)}
+				validateProxy={(p) => validateProxy(null, p)}
 			/>
 		</div>
 	</div>
-}
-
-function validateProxy(proxies:$ReadOnlyArray<Proxy>, old:?Proxy, proxy:Proxy) : ?string {
-	if(old && old.localPort == proxy.localPort) {
-		return null
-	}
-
-	if(proxies.find(p => p.localPort == proxy.localPort)) {
-		return 'Port-number is taken'
-	}
-
-	return null
 }

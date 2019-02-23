@@ -9,7 +9,7 @@ export opaque type $NonEmptyString = {
 }
 
 export type Proxy = {|
-	url?: ?string,
+	url: string,
 	localPort: number,
 	remotePort: number,
 |}
@@ -94,12 +94,11 @@ function deleteProxy(portOrProxy:Proxy|number) : Promise<void> {
 		.then(saveData)
 }
 function setProxy(proxy:Proxy) : Promise<void> {
+	if(proxy.url == null) {
+		throw new Error('Proxy is missing URL')
+	}
+
 	return ensureData()
-		.then(()=>{
-			if(proxy.url == null) {
-				proxy.url = data.url
-			}
-		})
 		.then(()=>deleteProxy(proxy))
 		.then(()=>data.proxies=data.proxies.concat(proxy).sort((p1, p2)=>p1.localPort-p2.localPort))
 		// start up new proxy

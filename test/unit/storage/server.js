@@ -5,6 +5,12 @@ var fs = require('fs').promises
 var deepCopy = require('fmerge')
 
 describe('unit/storage/server.js', function() {
+	let testData
+	beforeEach(() => {
+		testData = {
+		}
+	})
+
 	beforeEach(function() {
 		settings.storage = 'data/url'
 		settings.port = 1234
@@ -77,20 +83,27 @@ describe('unit/storage/server.js', function() {
 		})
 
 		describe('without a url', function() {
-			beforeEach(function() {
-				return storage.proxies.set({
-					localPort: 4,
-					remotePort: 44,
-				})
+			beforeEach(async () => {
+				try {
+					await storage.proxies.set({
+						localPort: 4,
+						remotePort: 44,
+					})
+				} catch(e) {
+					testData.lastError = e
+				}
 			})
-			it('should auto-add default url', function() {
+			it('should throw an error', () => {
+				expect(testData.lastError).to.exist
+				expect(() => { throw testData.lastError }).to.throw(/missing URL/i)
+			})
+			it('should not save data', function() {
 				expect(this.lastWrittenData).to.deep.equal({
 					url: 'abc',
 					proxies: [
 						{ url: 'abc', localPort: 1, remotePort: 11 },
 						{ url: 'abc', localPort: 2, remotePort: 22 },
 						{ url: 'def', localPort: 3, remotePort: 33 },
-						{ url: 'abc', localPort: 4, remotePort: 44 },
 					],
 				})
 			})

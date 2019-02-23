@@ -15,6 +15,7 @@ type Props = {|
 	validateProxy: (Proxy) => ?string,
 	onChangeProxy: (Proxy) => void,
 
+	url: string,
 	proxy?: Proxy,
 	onDelete?: () => void,
 |}
@@ -28,6 +29,7 @@ export default class Proxies extends React.Component<Props, State> {
 	state = getInitialState()
 
 	render() {
+		const { url } = this.props
 		const proxy = this.props.proxy || {}
 
 		const localPort = this.state.localPort == null ? proxy.localPort || '' : this.state.localPort
@@ -42,6 +44,7 @@ export default class Proxies extends React.Component<Props, State> {
 			)
 
 		const validation = this.props.validateProxy && this.props.validateProxy({
+			url,
 			localPort: +localPort,
 			remotePort: +remotePort,
 		})
@@ -124,6 +127,7 @@ export default class Proxies extends React.Component<Props, State> {
 	onSubmit = (e:SyntheticEvent<HTMLFormElement>) => {
 		e.preventDefault()
 
+		const { url } = this.props
 		var proxy = this.props.proxy || {}
 		const localPort = this.state.localPort == null ? proxy.localPort : +this.state.localPort
 		const remotePort = this.state.remotePort == null
@@ -134,6 +138,7 @@ export default class Proxies extends React.Component<Props, State> {
 			: this.state.remotePort === '' ? localPort : +this.state.remotePort
 
 		var result = {
+			url,
 			localPort,
 			remotePort,
 		}

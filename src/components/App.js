@@ -37,6 +37,7 @@ export default class App extends React.Component<Props, State> {
 				onUpdateProxy={onUpdateProxy}
 				onCreateProxy={onCreateProxy}
 				onToggleProxy={onToggleServer}
+				validateProxy={(old, newProxy) => validateProxy(proxies, old, newProxy)}
 			/>)}
 			{ newDestinationURL == null
 			? <CreateDestinationView
@@ -54,6 +55,7 @@ export default class App extends React.Component<Props, State> {
 				onUpdateProxy={onUpdateProxy}
 				onCreateProxy={onCreateProxy}
 				onToggleProxy={onToggleServer}
+				validateProxy={(old, newProxy) => validateProxy(proxies, old, newProxy)}
 			/> }
 		</div>
 	}
@@ -70,6 +72,17 @@ function onCreateProxy(proxy:Proxy) : void {
 }
 function onToggleServer(proxy:Proxy) {
 	performAction(()=>storage.status.toggle())
+}
+function validateProxy(proxies:$ReadOnlyArray<Proxy>, old:?Proxy, proxy:Proxy) : ?string {
+	if(old && old.localPort == proxy.localPort) {
+		return null
+	}
+
+	if(proxies.find(p => p.localPort == proxy.localPort)) {
+		return 'Port-number is taken'
+	}
+
+	return null
 }
 
 function performAction(fn:()=>Promise<mixed>) {
