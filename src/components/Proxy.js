@@ -47,6 +47,7 @@ export default class Proxies extends React.Component<Props, State> {
 			url,
 			localPort: +localPort,
 			remotePort: +remotePort,
+			isRunning: false,
 		})
 
 		return <form onSubmit={this.onSubmit}>
@@ -141,6 +142,7 @@ export default class Proxies extends React.Component<Props, State> {
 			url,
 			localPort,
 			remotePort,
+			isRunning: false,
 		}
 
 		if(this.props.validateProxy && this.props.validateProxy(result)) {

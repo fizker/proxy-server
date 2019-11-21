@@ -14,10 +14,18 @@ export type Proxy = {|
 	url: string,
 	localPort: number,
 	remotePort: number,
+	+isRunning: boolean,
 |}
 
+type ServerProxy = $ReadOnly<{|
+	url: string,
+	localPort: number,
+	remotePort: number,
+	isRunning: boolean,
+|}>
+
 export type Data = {|
-	proxies: $ReadOnlyArray<Proxy>,
+	proxies: $ReadOnlyArray<ServerProxy>,
 	url: ?string,
 |}
 // $FlowFixMe
@@ -80,7 +88,7 @@ function setUrl(url:string) : Promise<void> {
 		.then(saveData)
 }
 
-function getAllProxies() : Promise<$ReadOnlyArray<Proxy>> {
+function getAllProxies() : Promise<$ReadOnlyArray<ServerProxy>> {
 	return ensureData()
 		.then(()=>data.proxies)
 }

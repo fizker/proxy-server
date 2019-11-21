@@ -11,7 +11,7 @@ import storage from './storage/server'
 import type { Data, Proxy } from './storage/server'
 
 export type ClientData = {
-	...Data,
+	proxies: $ReadOnlyArray<Proxy>,
 	ip: string,
 	proxyRunning: boolean,
 }
@@ -39,7 +39,7 @@ export default function(options:Options) : Promise<void> {
 			.then(()=>storage.getAll())
 			.then(d =>{
 				const data:ClientData = {
-					...d,
+					proxies: d.proxies.map(x=>({...x})),
 					ip: req.ip,
 					proxyRunning: proxies != null,
 				}
