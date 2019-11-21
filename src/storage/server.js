@@ -4,6 +4,8 @@ import { promises as fs } from 'fs'
 
 import settings from '../settings'
 
+export type AnyReturnValue = mixed
+
 export opaque type $NonEmptyString = {
 	value: string,
 }

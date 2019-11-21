@@ -2,7 +2,7 @@
 
 import * as React from 'react'
 
-import type { Proxy } from '../storage/server'
+import type { Proxy, AnyReturnValue } from '../storage/server'
 
 function getInitialState() : State {
 	return {
@@ -13,11 +13,11 @@ function getInitialState() : State {
 
 type Props = {|
 	validateProxy: (Proxy) => ?string,
-	onChangeProxy: (Proxy) => void,
+	onChangeProxy: (Proxy) => AnyReturnValue,
 
 	url: string,
 	proxy?: Proxy,
-	onDelete?: () => void,
+	onDelete?: () => AnyReturnValue,
 |}
 
 type State = {|

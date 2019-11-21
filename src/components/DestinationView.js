@@ -5,7 +5,7 @@ import * as React from 'react'
 import URLView from './Url'
 import ProxyView from './Proxy'
 
-import type { Proxy } from '../storage/server'
+import type { Proxy, AnyReturnValue } from '../storage/server'
 import type { Destination } from '../transforms/destination'
 
 function RunIndicatorView({ isRunning }:{ isRunning: boolean }) {
@@ -21,20 +21,22 @@ type Props = $ReadOnly<{|
 	destination: Destination,
 	ip: string,
 
-	onToggleProxy: (Proxy) => void,
-	onDeleteProxy: (Proxy) => void,
-	onUpdateProxy: (old:Proxy, updatedProxy:Proxy) => void,
-	onCreateProxy: (Proxy) => void,
+	onDeleteDestination: () => AnyReturnValue,
+	onToggleProxy: (Proxy) => AnyReturnValue,
+	onDeleteProxy: (Proxy) => AnyReturnValue,
+	onUpdateProxy: (old:Proxy, updatedProxy:Proxy) => AnyReturnValue,
+	onCreateProxy: (Proxy) => AnyReturnValue,
 	validateProxy: (old:?Proxy, proxy:Proxy) => ?string,
 |}>
 
-export default function Server({ validateProxy, destination, ip, onToggleProxy, onDeleteProxy, onCreateProxy, onUpdateProxy }:Props) {
+export default function DestinationView({
+	validateProxy, destination, ip,
+	onDeleteDestination,
+	onToggleProxy, onDeleteProxy, onCreateProxy, onUpdateProxy,
+}:Props) {
 	const firstProxy = destination.proxies[0]
 	return <div>
-		{firstProxy != null && <button onClick={() => onToggleProxy(firstProxy)}>
-			{destination.isRunning ? 'Turn off' : 'Turn on'}
-		</button>}
-		<RunIndicatorView isRunning={destination.isRunning} />
+		<h1>Destination</h1>
 		<URLView
 			url={destination.url}
 			onChangeUrl={url => {
@@ -47,8 +49,17 @@ export default function Server({ validateProxy, destination, ip, onToggleProxy, 
 			}}
 			ip={ip}
 		/>
+		{firstProxy != null && <div>
+			<button onClick={() => onToggleProxy(firstProxy)}>
+				{destination.isRunning ? 'Turn off' : 'Turn on'}
+			</button>
+			<RunIndicatorView isRunning={destination.isRunning} />
+		</div>}
+		<button onClick={onDeleteDestination}>
+			Delete destination
+		</button>
 		<div>
-			<h1>Proxies</h1>
+			<h2>Proxies</h2>
 			{destination.proxies.map(proxy => <ProxyView
 				key={proxy.localPort}
 				url={destination.url}

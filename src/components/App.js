@@ -18,27 +18,35 @@ type State = $ReadOnly<{|
 	newDestinationURL: ?string
 |}>
 
+function HR() {
+	return <hr style={{ margin: "20px 0" }} />
+}
+
 export default class App extends React.Component<Props, State> {
 	state = {
 		newDestinationURL: null,
 	}
 	render() {
-		const { data: { proxies, url, proxyRunning, ip } } = this.props
+		const { data: { proxies, proxyRunning, ip } } = this.props
 		const { newDestinationURL } = this.state
 		const destinations = createDestinationsForProxies(proxies)
 
 		return <div>
-			{destinations.map(dest => <DestinationView
-				key={dest.url}
-				ip={ip}
-				destination={dest}
+			{destinations.map(dest => <React.Fragment key={dest.url}>
+				<DestinationView
+					ip={ip}
+					destination={dest}
+					onDeleteDestination={() => dest.proxies.forEach(onDeleteProxy)}
 
-				onDeleteProxy={onDeleteProxy}
-				onUpdateProxy={onUpdateProxy}
-				onCreateProxy={onCreateProxy}
-				onToggleProxy={onToggleServer}
-				validateProxy={(old, newProxy) => validateProxy(proxies, old, newProxy)}
-			/>)}
+					onDeleteProxy={onDeleteProxy}
+					onUpdateProxy={onUpdateProxy}
+					onCreateProxy={onCreateProxy}
+					onToggleProxy={onToggleServer}
+					validateProxy={(old, newProxy) => validateProxy(proxies, old, newProxy)}
+				/>
+				<HR />
+			</React.Fragment>)}
+
 			{ newDestinationURL == null
 			? <CreateDestinationView
 				onCreate={url => this.setState({ newDestinationURL: url })}
@@ -50,6 +58,7 @@ export default class App extends React.Component<Props, State> {
 					proxies: [],
 					isRunning: false,
 				}}
+				onDeleteDestination={() => this.setState({ newDestinationURL: null })}
 
 				onDeleteProxy={onDeleteProxy}
 				onUpdateProxy={onUpdateProxy}
