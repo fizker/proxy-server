@@ -28,8 +28,9 @@ export type Data = {|
 	proxies: $ReadOnlyArray<ServerProxy>,
 	url: ?string,
 |}
-// $FlowFixMe
-var data:Data = null
+var data:?Data = null
+let pendingSavePromise:?Promise<void> = null
+let nextSavePromise:?Promise<void> = null
 
 function NonEmptyString(input:?string) : ?$NonEmptyString {
 	if(input == null || input === '') {
@@ -40,8 +41,7 @@ function NonEmptyString(input:?string) : ?$NonEmptyString {
 }
 
 export default {
-	getAll() : Promise<Data> { return ensureData().then(()=>data) },
-	// $FlowFixMe
+	getAll() : Promise<Data> { return ensureData() },
 	clearData: () => data = null,
 
 	proxies: {
@@ -58,61 +58,87 @@ export default {
 	NonEmptyString,
 }
 
-function ensureData() : Promise<void> {
-	if(data) return Promise.resolve()
+async function ensureData() : Promise<Data> {
+	if(data) {
+		return data
+	}
 
 	if(settings.storage == null) {
 		throw new Error('storage URL is not defined')
 	}
 
-	return fs.readFile(settings.storage, 'utf8')
+	data = await fs.readFile(settings.storage, 'utf8')
 		.catch(()=>'{"url":null,"proxies":[]}')
 		.then(JSON.parse)
-		.then(d => data = d)
+
+	return data
 }
 function saveData() : Promise<void> {
-	if(settings.storage == null) {
+	const { storage } = settings
+	if(storage == null) {
 		throw new Error('storage URL is not defined')
 	}
-	return fs.writeFile(settings.storage, JSON.stringify(data))
+
+	if(pendingSavePromise != null) {
+		if(nextSavePromise == null) {
+			nextSavePromise = pendingSavePromise
+				.then(saveData)
+		}
+		return nextSavePromise
+	}
+
+	const encoded = JSON.stringify(data)
+	if(encoded == null) {
+		throw new Error("could not encode data")
+	}
+	nextSavePromise = fs.writeFile(storage, encoded)
+		.then(() => {
+			nextSavePromise = null
+		})
+	return nextSavePromise
 }
 
 function getUrl() : Promise<?string> {
 	return ensureData()
-		.then(()=>data.url)
+		.then((data) => data.url)
 }
 function setUrl(url:string) : Promise<void> {
 	return ensureData()
-		.then(()=>data.url=url)
+		.then((data)=>data.url=url)
 		// reconfigure proxies?
 		.then(saveData)
 }
 
 function getAllProxies() : Promise<$ReadOnlyArray<ServerProxy>> {
 	return ensureData()
-		.then(()=>data.proxies)
+		.then((data)=>data.proxies)
 }
 function deleteProxy(portOrProxy:Proxy|number) : Promise<void> {
 	var port = typeof(portOrProxy) == 'object' ? portOrProxy.localPort : portOrProxy
 
 	return ensureData()
-		.then(()=>{
+		.then((data) => {
 			var p = data.proxies.find(p => p.localPort == port)
 			data.proxies = data.proxies.filter(p => p.localPort != port)
 			// TODO: Shut down proxy
 		})
 		.then(saveData)
 }
-function setProxy(proxy:Proxy) : Promise<void> {
+async function setProxy(proxy:Proxy) : Promise<void> {
 	if(proxy.url == null) {
 		throw new Error('Proxy is missing URL')
 	}
 
-	return ensureData()
-		.then(()=>deleteProxy(proxy))
-		.then(()=>data.proxies=data.proxies.concat(proxy).sort((p1, p2)=>p1.localPort-p2.localPort))
-		// start up new proxy
-		.then(saveData)
+	const data = await ensureData()
+
+	await deleteProxy(proxy)
+
+	data.proxies = data.proxies
+		.concat(proxy)
+		.sort((p1, p2) => p1.localPort - p2.localPort)
+
+	// start up new proxy
+	await saveData()
 }
 function updateProxy(old:Proxy, proxy:Proxy) : Promise<void> {
 	return deleteProxy(old)
