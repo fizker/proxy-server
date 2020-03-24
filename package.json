@@ -13,6 +13,7 @@
     "babel-loader": "^8.1.0",
     "babel-plugin-transform-es2015-arrow-functions": "^6.1.18",
     "body-parser": "^1.18.3",
+    "core-js": "^3.6.4",
     "express": "^4.16.4",
     "http-proxy": "^1.17.0",
     "react": "^16.8.3",

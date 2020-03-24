@@ -5,6 +5,7 @@
   "presets": [
     [ "@babel/preset-env", {
       "useBuiltIns": "entry",
+      "corejs": 3,
       "targets": {
         "safari": "12",
         "chrome": "70",
