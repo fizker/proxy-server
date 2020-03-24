@@ -29,7 +29,7 @@
     "flow-typed": "^2.5.1",
     "fmerge": "^1.2.0",
     "fzkes": "^0.15.0",
-    "mocha": "^6.0.1",
+    "mocha": "^7.1.1",
     "nodemon": "^1.18.10"
   },
   "scripts": {
