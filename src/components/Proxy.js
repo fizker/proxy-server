@@ -51,14 +51,14 @@ export default class Proxies extends React.Component<Props, State> {
 				Local port:
 				<input
 					value={localPort}
-					onChange={this.onChange.bind(null, 'localPort')}
+					onChange={this.onChangeLocalPort}
 				/>
 			</label>
 			<label>
 				Remote port:
 				<input
 					value={remotePort}
-					onChange={this.onChange.bind(null, 'remotePort')}
+					onChange={this.onChangeRemotePort}
 					placeholder="Use local port"
 				/>
 			</label>
@@ -90,21 +90,32 @@ export default class Proxies extends React.Component<Props, State> {
 		</form>
 	}
 
-	onChange = (prop:'localPort'|'remotePort', e:SyntheticEvent<HTMLInputElement>) => {
-		if(!this.props.onChangeProxy) return
-
-		var val = e.currentTarget.value
+	onChangeLocalPort = (e:SyntheticEvent<HTMLInputElement>) => {
+		let val = e.currentTarget.value
 
 		let proxy = this.props.proxy || {}
-		if(proxy[prop].toString() === val) {
-			val = null
-		}
-		if(prop === 'remotePort' && val === '' && proxy.localPort === proxy.remotePort) {
+		if(proxy.localPort.toString() === val) {
 			val = null
 		}
 
 		this.setState({
-			[prop]: val
+			localPort: val
+		})
+	}
+
+	onChangeRemotePort = (e:SyntheticEvent<HTMLInputElement>) => {
+		let val = e.currentTarget.value
+
+		const proxy = this.props.proxy || {}
+		if(proxy.remotePort.toString() === val) {
+			val = null
+		}
+		if(val === '' && proxy.localPort === proxy.remotePort) {
+			val = null
+		}
+
+		this.setState({
+			remotePort: val
 		})
 	}
 
@@ -112,7 +123,6 @@ export default class Proxies extends React.Component<Props, State> {
 		e.preventDefault()
 
 		var proxy = this.props.proxy || {}
-		// flowlint-next-line sketchy-null-number:warn
 		const localPort = this.state.localPort == null ? proxy.localPort : +this.state.localPort
 		const remotePort = this.state.remotePort == null
 			? (proxy.remotePort == null

@@ -31,6 +31,7 @@ function NonEmptyString(input:?string) : ?$NonEmptyString {
 
 export default {
 	getAll() : Promise<Data> { return ensureData().then(()=>data) },
+	// $FlowFixMe
 	clearData: () => data = null,
 
 	proxies: {
