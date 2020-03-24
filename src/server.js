@@ -85,9 +85,9 @@ export default function(options:Options) : Promise<void> {
 				}
 
 				var url = urlModule.parse(data.url)
-				delete url.host
+				url.host = null
 				proxies = data.proxies.map(p => {
-					url.port = p.remotePort == null ? undefined : p.remotePort.toString()
+					url.port = p.remotePort == null ? null : p.remotePort.toString()
 					return new ProxyServer(urlModule.format(url), p.localPort)
 				})
 				return Promise.all(proxies.map(p => p.start()))
